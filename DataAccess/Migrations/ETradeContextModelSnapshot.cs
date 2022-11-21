@@ -55,8 +55,7 @@ namespace DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CategoryId")
-                        .IsRequired()
+                    b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
@@ -75,12 +74,10 @@ namespace DataAccess.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<int?>("StockAmount")
-                        .IsRequired()
+                    b.Property<int>("StockAmount")
                         .HasColumnType("int");
 
-                    b.Property<double?>("UnitPrice")
-                        .IsRequired()
+                    b.Property<double>("UnitPrice")
                         .HasColumnType("float");
 
                     b.HasKey("Id");

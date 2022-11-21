@@ -1,4 +1,7 @@
-﻿using AppCore.Records.Bases;
+﻿#nullable disable // null değer atanabilen referans tiplerin sonuna ? yazma uyarısını devre dışı bırakmak 
+                  // ve ? konmadığında zorunlu hale gelmelerini engellemek için sadece entity ve modellerde kullanılmalıdır
+
+using AppCore.Records.Bases;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -9,22 +12,19 @@ namespace DataAccess.Entities
     {
         [Required]
         [StringLength(200)]
-        public string? Name { get; set; } // özellik tipleri yanındaki ? sadece entity ve modellerde kullanılmalı
+        public string Name { get; set; } // zorunlu (tabloya null kaydedilemeyen) özellik
 
         [StringLength(500)]
-        public string? Description { get; set; }
+        public string Description { get; set; } // zorunlu özellik
 
-        [Required]
-        public double? UnitPrice { get; set; }
+        public double UnitPrice { get; set; } // zorunlu özellik
 
-        [Required]
-        public int? StockAmount { get; set; }
+        public int StockAmount { get; set; } // zorunlu özellik
 
-        public DateTime? ExpirationDate { get; set; }
+        public DateTime? ExpirationDate { get; set; } // zorunlu olmayan (tabloya null kaydedilebilen) özellik
 
-        [Required]
-        public int? CategoryId { get; set; }
+        public int CategoryId { get; set; } // zorunlu özellik
 
-        public Category? Category { get; set; }
+        public Category Category { get; set; } // başka entity'e referans
     }
 }
