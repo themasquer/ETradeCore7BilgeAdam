@@ -13,12 +13,15 @@ builder.Services.AddControllersWithViews();
 
 // Unable to resolve service hatalarý burada çözümlenmelidir.
 
-// AddScoped: istek (request) boyunca objenin referansýný (genelde interface veya abstract class) kullandýðýmýz yerde obje (somut class'tan oluþturulacak) bir kere oluþturulur ve yanýt (response) dönene kadar bu obje hayatta kalýr.
-// AddSingleton: web uygulamasý baþladýðýnda objenin referansný (genelde interface veya abstract class) kullandýðýmýz yerde obje (somut class'tan oluþturulacak) bir kere oluþturulur ve uygulama çalýþtýðý (IIS üzerinden uygulama durdurulmadýðý veya yeniden baþlatýlmadýðý) sürece bu obje hayatta kalýr.
+// AddScoped: istek (request) boyunca objenin referansýný (genelde interface veya abstract class) kullandýðýmýz yerde obje (somut class'tan oluþturulacak)
+// bir kere oluþturulur ve yanýt (response) dönene kadar bu obje hayatta kalýr.
+// AddSingleton: web uygulamasý baþladýðýnda objenin referansný (genelde interface veya abstract class) kullandýðýmýz yerde obje (somut class'tan oluþturulacak)
+// bir kere oluþturulur ve uygulama çalýþtýðý (IIS üzerinden uygulama durdurulmadýðý veya yeniden baþlatýlmadýðý) sürece bu obje hayatta kalýr.
 // AddTransient: istek (request) baðýmsýz ihtiyaç olan objenin referansýný (genelde interface veya abstract class) kullandýðýmýz her yerde bu objeyi new'ler.
 // Genelde AddScoped methodu kullanýlýr.
 
-string connectionString = builder.Configuration.GetConnectionString("ETradeDb");
+string connectionString = builder.Configuration.GetConnectionString("ETradeDb"); // appsettings.json veya appsettings.Development.json dosyalarýndaki isim üzerinden atanan
+                                                                                 // veritabaný baðlantý string'ini döner.
 builder.Services.AddDbContext<ETradeContext>(options => options.UseSqlServer(connectionString));
 #endregion
 
