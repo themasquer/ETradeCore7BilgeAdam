@@ -1,49 +1,88 @@
-﻿<!DOCTYPE html>
+﻿<!-- Oluşturulan view'ların içinde gösterildiği tüm view'lar için ortak şablon view'ıdır. -->
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - MvcWebUI</title>
+    <meta charset="utf-8" /><!-- Türkçe karakter gösterilecek sayfalarda genelde kullanılır. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><!-- Sayfanın Bootstrap responsive gösterim ayarları. -->
+    <title>@ViewData["Title"] | E-Trade</title><!-- View'larda ViewData veya ViewBag ile atanan Title'ın değeri burada sayfa başlığı olarak gösterilir. -->
+    
+    <!-- wwwroot klasöründeki CSS dosya referansları. -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/MvcWebUI.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/MvcWebUI.styles.css" asp-append-version="true" /><!-- Projedeki tüm CSS dosyalarının minimize edilip oluşturulan ve tarayıcıya gönderilen tek CSS dosyası. -->
+
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MvcWebUI</a>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3"><!-- Bootstrap menü. -->
+            <div class="container-fluid"><!-- container Bootstrap class'ı: sağda ve solda belli bir miktar boşluk bırakır, container-fluid Bootstrap class'ı: tüm sayfayi genişlik olarak kaplar. -->
+                
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">E-Trade</a>
+                <!-- 
+                    Sayfanın sol üst köşesindeki tıklandığında Home controller'ının Index action'ına yönlendiren link. 
+                    asp-area, asp-controller ve asp-action ASP.NET Core MVC'deki tag helper'lardandır.
+                    Tag helper'lar HTML tag'leri ile birlikte kolayca kullanılabilen ve asp- ile yazılan ve HTML tag'lerini oluşturmak için kullanılan bir kütüphanedir.
+                    Kullanabilmek için Views klasöründeki _ViewImports.cshtml dosyasına addTagHelper ile eklenmeleri gerekir.
+                -->
+
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+                <!-- Tarayıcının genişliği küçültüldüğünde veya mobil ekranda sayfa görüntülendiğinde menünün bir butona tıklanarak açılıp kapanmasını sağlar. -->
+
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
+
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-white" asp-area="Database" asp-controller="Home" asp-action="Index">Seed Database</a>
+                            <!-- 
+                                Development ortamında kullanılacak ilk verilerin sıfırdan oluşturulmasını sağlayan link. 
+                                Bu işlem Areas -> Database altındaki Database adındaki bir area tanımlanmış controller'ın action'ında gerçekleştirildiğinden
+                                asp-area mutlaka Database olarak belirtilmelidir.
+                                Projenin Controllers klasöründeki controller action'larına yönlendiren link'lerde asp-area="" olarak yazılır.
+                            -->
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+
+                        <li class="nav-item"><!-- Menü elemanı. -->
+                            <a class="nav-link text-white" asp-area="" asp-controller="Products" asp-action="Index">Products</a>
+                            <!-- Tıklandığında Products controller'ının Index action'ına yönlendirecek Ürünler link'i. -->
                         </li>
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
+    <div class="container-fluid">
         <main role="main" class="pb-3">
-            @RenderBody()
+            @RenderBody() 
+            @* 
+                Oluşturduğumuz view'lar bu method ile layout içerisinde istenilen bir alanda gösterilir. 
+                Tüm view'lar için ortak layout Views klasöründeki _ViewStart.cshtml dosyasında ayarlanabilir.
+                Eğer bir view farklı bir layout kullanacaksa, örneğin yeni layout dosya adı _MyLayout.cshtml olsun, o zaman view'ın en üstünde 
+                @{
+                    Layout = "_MyLayout";
+                }
+                şeklinde tanımlanabilir.
+                Tüm proje için layout gibi ortak kullanılacak view dosyaları Views -> Shared klasöründe oluşturulmalıdır.
+            *@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2022 - MvcWebUI - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="border-top footer text-muted"><!-- Sayfanın en altında istenilirse kullanılabilecek footer kısmı. -->
+        <div class="container text-center">
+            <a asp-area="" asp-controller="Home" asp-action="Privacy">&copy; @DateTime.Now.Year | E-Trade. All rights reserved.</a>
         </div>
     </footer>
+
+    <!-- wwwroot klasöründeki Javascript dosya referansları. -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!-- View'larda ihtiyaca göre oluşturulan Scripts adındaki section'ları (bölüm) buraya yazdırır. -->
     @await RenderSectionAsync("Scripts", required: false)
+
 </body>
 </html>

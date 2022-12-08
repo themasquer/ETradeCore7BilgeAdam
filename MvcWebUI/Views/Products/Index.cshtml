@@ -1,0 +1,102 @@
+﻿@* View'larda kullanılan Razor, C# ile birlikte HTML kullanmamızı sağlar. *@
+
+@* Razor comment (yorum) syntax'i *@
+
+@* 1. yöntem: *@
+@*@model List<Business.Models.ProductModel> *@
+@* 
+    Products Controller'ının Index action'ında listeyi List<ProductModel> olarak çektiğimiz ve bu view'da model objesi olarak kullanacağımız
+    için tipini bu satırdaki şekilde namespace'i üzerinden belirtiyoruz. 
+*@
+
+@* 2. yöntem: *@
+@*@model List<ProductModel>*@
+@*
+    View'da kullanacağımız model objesinin tipini namespace olmadan belirtebilmek için Views klasörü altındaki _ViewImports.cshtml'de using ile 
+    ProductModel class'ının namespace'ini eklememiz gerekmektedir, bu şekilde kullanım tercih edilmelidir.
+*@
+
+@* 3. yöntem: *@
+@model IEnumerable<ProductModel>
+@* Razor'ın bu syntax'inde @'ten sonra C# kodu yazılır ve ; ile sonlandırılmaz. Herhangi bir boşluk (boşluk veya enter (return) karakteri) kullanıldığında C# kod yazımı sona erer. *@
+@*
+    Model objesinin tipi için kolleksiyonlarda IEnumerable kullanmak daha uygundur, bu şekilde model class'larındaki özelliklerin DisplayName attribute'larına
+    (data annotation) ulaşılıp view'da kullanılabilir.
+*@
+
+@{
+    // Razor'ın bu syntax'inde süslü parantez içerisine C# kodları ; ile sonlandırılarak yazılabilir.
+    ViewData["Title"] = "Products"; // ViewData ile ViewBag controller action'larından view'lara veya view'ler arası veri taşımak için kullanılır.
+                                    // ViewBag ile ViewData yapı olarak aynıdır dolayısıyla birbirlerinin yerine kullanılabilir, sadece kullanımları 
+                                    // aşağıda olduğu gibi farklıdır. Title anahtar değeri ViewData kolleksiyonunda ulaşacağımız verinin (Products) string olarak index'ini,
+                                    // aynı zamanda ViewBag dinamik objesi üzerinden kullanırsak veriye (Products) ulaşacağımız özellik adını belirtir.
+}
+
+@* Aşağıda ister ViewBag ister ViewData kullanılabilir. h4 HTML tag'i içerisine Title için yukarıda atadığımız değeri yani Products'ı yazdırır. *@
+@*<h4>@ViewData["Title"]</h4>*@
+<h4>@ViewBag.Title</h4>
+<hr />
+<table class="table">
+    <thead>
+        <!-- Sütun başlıkları -->
+        <tr>
+            <th>
+                @*Name*@
+                @Html.DisplayNameFor(model => model.Name)
+                @* 
+                    Burada Name'i elle yazmak yerine model tipimiz olan ProductModel'in Name özelliğinin DisplayName attribute'u (data annotation) ile belirttiğimiz değeri kullanmalıyız. 
+                    DisplayNameFor HTML Helper methodu ile Lambda Expression kullanarak bu sayfanın model tipi (ProductModel) üzerinden Name özelliğini kullanarak 
+                    bunun DisplayName'ini göster dedik.
+                *@
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UnitPriceDisplay) 
+                @* 
+                    double olan UnitPrice'ı değil servisin Query methodunda formatladığımız string olan UnitPriceDisplay'i 
+                    kullanmak daha uygundur. 
+                *@
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StockAmount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ExpirationDateDisplay)
+                @*
+                    DateTime olan ExpirationDate'i değil servisin Query methodunda formatladığımız string olan ExpirationDateDisplay'i
+                    kullanmak daha uygundur.
+                *@
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CategoryNameDisplay)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Veri satırları -->
+        @foreach (var product in Model) // ürün listemiz olan Model objemiz üzerinden her bir ürüne ulaşıyoruz ve her bir ürün için yeni bir HTML satırı ile 
+                                        // içerisindeki HTML sütunları üzerinden ürün verilerini gösteriyoruz.
+        {
+            <tr>
+                <td>
+                    @* 1. yöntem: direkt döngüdeki eleman üzerinden gösterim *@
+                    @*@product.Name*@
+
+                    @* 2. yöntem: döngüdeki eleman üzerinden DisplayFor HTML Helper'ı üzerinden gösterim *@
+                    @Html.DisplayFor(model => product.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => product.UnitPriceDisplay)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => product.StockAmount)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => product.ExpirationDateDisplay)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => product.CategoryNameDisplay)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

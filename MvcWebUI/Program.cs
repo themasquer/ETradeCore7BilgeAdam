@@ -1,15 +1,36 @@
 #nullable disable
 
+using Business.Services;
 using DataAccess.Contexts;
+using DataAccess.Repositories;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+#region Localization
+// Web uygulamasýnýn bölgesel ayarý aþaðýdaki þekilde tek seferde konfigüre edilerek tüm projenin bu ayarý kullanmasý saðlanabilir,
+// dolayýsýyla veri formatlama veya dönüþtürme gibi iþlemlerde her seferinde CultureInfo objesinin kullaným gereksinimi ortadan kalkar.
+// Bu þekilde sadece tek bir bölgesel ayar projede kullanýlabilir.
+List<CultureInfo> cultures = new List<CultureInfo>()
+{
+    new CultureInfo("en-US") // eðer uygulama Türkçe olacaksa CultureInfo constructor'ýnýn parametresini ("tr-TR") yapmak yeterlidir.
+};
+
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    options.DefaultRequestCulture = new RequestCulture(cultures.FirstOrDefault().Name);
+    options.SupportedCultures = cultures;
+    options.SupportedUICultures = cultures;
+});
+#endregion
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
 #region IoC Container : Inversion of Control Container (Baðýmlýlýklarýn Yönetimi) 
-// Alternatif olarak Autofac ve Ninject gibi kütüphaneler de kullanýlabilir.
+// Alternatif olarak Business katmanýnda Autofac ve Ninject gibi kütüphaneler de kullanýlabilir.
 
 // Unable to resolve service hatalarý burada çözümlenmelidir.
 
@@ -22,10 +43,28 @@ builder.Services.AddControllersWithViews();
 
 string connectionString = builder.Configuration.GetConnectionString("ETradeDb"); // appsettings.json veya appsettings.Development.json dosyalarýndaki isim üzerinden atanan
                                                                                  // veritabaný baðlantý string'ini döner.
-builder.Services.AddDbContext<ETradeContext>(options => options.UseSqlServer(connectionString));
+
+builder.Services.AddDbContext<ETradeContext>(options => options.UseSqlServer(connectionString)); // projede herhangi bir class'ta ETradeContext tipinde 
+                                                                                                 // constructor injection yapýldýðýnda ETradeContext objesini new'leyerek
+                                                                                                 // o class'a enjekte eder.       
+
+builder.Services.AddScoped<ProductRepoBase, ProductRepo>(); // projede herhangi bir class'ta ProductRepoBase tipinde constructor injection yapýldýðýnda
+                                                            // ProductRepo objesini new'leyerek o class'a enjekte eder.
+
+builder.Services.AddScoped<IProductService, ProductService>(); // projede herhangi bir class'ta IProductService tipinde constructor injection yapýldýðýnda
+                                                               // ProductService objesini new'leyerek o class'a enjekte eder.
 #endregion
 
 var app = builder.Build();
+
+#region Localization
+app.UseRequestLocalization(new RequestLocalizationOptions()
+{
+    DefaultRequestCulture = new RequestCulture(cultures.FirstOrDefault().Name),
+    SupportedCultures = cultures,
+    SupportedUICultures = cultures,
+});
+#endregion
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -42,8 +81,18 @@ app.UseRouting();
 
 app.UseAuthorization();
 
+#region Area
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute(
+      name: "areas",
+      pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+    );
+});
+#endregion
+
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}"); // MVC default route tanýmý
 
 app.Run();

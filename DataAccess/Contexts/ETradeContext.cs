@@ -12,9 +12,24 @@ namespace DataAccess.Contexts
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
 
-        public ETradeContext(DbContextOptions options) : base(options)
+        public ETradeContext(DbContextOptions options) : base(options) // options parametresi MvcWebUI katmanındaki Program.cs IoC Container'ında AddDbContext methodu ile
+                                                                       // bağımlılığı yönetilen ve appsettings.json veya appsettings.Development.json dosyalarında
+                                                                       // tanımlanmış connection string'i bu class'ın constructor'ına, dolayısıyla esas veritabanı
+                                                                       // işlemlerini yapacak olan DbContext class'ının constructor'ına taşır. Genelde bu kullanım tercih edilir.
         {
 
         }
+
+        // eğer istenirse connection string DbContext'in OnConfiguring methodu ezilerek de tanımlanıp kullanılabilir, genelde bu kullanım tercih edilmez.
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    // 1. yöntem: Windows Authentication
+        //    //string connectionString = "server=.\\SQLEXPRESS;database=BA_ETradeCore7;trusted_connection=true;multipleactiveresultsets=true;trustservercertificate=true;";
+
+        //    // 2. yöntem: SQL Server Authentication
+        //    string connectionString = "server=.\\SQLEXPRESS;database=BA_ETradeCore7;user id=sa;password=sa;multipleactiveresultsets=true;trustservercertificate=true;";
+
+        //    optionsBuilder.UseSqlServer(connectionString);
+        //}
     }
 }
