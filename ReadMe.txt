@@ -38,8 +38,20 @@ eden concrete (somut) service'ler oluþturulur ve MvcWebUI katmanýnda Program.cs'
 10) MvcWebUI katmanýnda yönetilecek model için controller ve ilgili view'larý oluþturularak ilgili service constructor üzerinden enjekte edilir
 ve controller action'larýnda methodlarý kullanýlarak model objeleri üzerinden iþlemler (örneðin CRUD) gerçekleþtirilir.
 
-11) Eðer istenirse MvcWebUI katmanýndaki Views -> Shared klasörü altýndaki projede tüm oluþturulan view'larýn bir þablon içerisinde gösterilmesini
-saðlayan _Layout.cshtml view'ý içerisinde controller ve action'lar üzerinden, örneðin menüye link'ler eklenebilir.
+View <-> Controller (Action) <-> Service (Model) <-> Repository (Entity) <-> DbContext (Entity) <-> Database
+
+11) MvcWebUI katmanýndaki Views -> Shared klasörü altýndaki projede tüm oluþturulan view'larýn bir þablon içerisinde gösterilmesini
+saðlayan _Layout.cshtml view'ý içerisinde controller ve action'lar üzerinden, örneðin menüye link'ler eklenir.
 
 12) Eðer istenirse veritabanýndaki tüm verilerin sýfýrdan oluþturulmasýný saðlayan, örneðin MvcWebUI katmanýnda Areas klasöründeki Database area'sý içerisinde,
 bir controller ve aksiyonu yazýlabilir.
+
+Konu Anlatýmlý Proje Geliþtirme Aþamalarý:
+1) DataAccess -> Entities -> Product ve Category entity'leri
+2) DataAccess -> Contexts -> ETradeContext (MvcWebUI -> Program.cs -> IoC Container ile MvcWebUI -> appsettings.json veya istenirse appsetting.Development.json -> ConnectionStrings)
+3) DataAccess -> Repositories -> ProductRepo (MvcWebUI -> Program.cs -> IoC Container)
+4) Business -> Models -> ProductModel
+5) Business -> Services -> ProductService (MvcWebUI -> Program.cs -> IoC Container)
+6) MvcWebUI -> Controllers -> ProductsController
+7) MvcWebUI -> Views -> Products -> Index.cshtml
+8) MvcWebUI -> Views -> Products -> Create.cshtml

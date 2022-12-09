@@ -1,0 +1,155 @@
+﻿@model ProductModel 
+@* Bu view'da veriler ProductModel üzerinden alınacak ve ProductsController'daki Create post aksiyonuna bu model parametre olarak gönderilecek. *@
+
+@{
+    ViewBag.Title = "Create New Product";
+}
+
+<h1>@ViewBag.Title</h1>
+<hr />
+
+
+
+@* HTML Form: *@
+@*<form action="/Products/Create" method="post">
+<!-- 
+    Bu formdaki verileri ProductsController'ın Create post action'ına gönderir. Get sunucudan veri almak, post ise sunucuya veri göndermek demektir.
+    Eğer action yazılmazsa default olarak form kendisine verileri gönderir.
+    Eğer method yazılmazsa default'u get'tir yani ProductsController'ın Create get action'ına veriler gönderilir.
+    Method get yapıldığında tarayıcının adresinde query string üzerinden veriler sunucuya gönderilir.
+    Örneğin ~/Products/Create?Name=Coffe&UnitPrice=15&StockAmount=100&CategoryId=1.
+    Veriler get methodu ile tarayıcının adresi üzerinden açık bir şekilde sunucuya gönderildiğinden kullanımı her zaman uygun değildir, 
+    bu yüzden genelde veriler post methodu üzerinden sunucuya gönderilir.
+-->
+    <div class="row mb-3">
+        <label for="name" class="col-2 col-form-label">Product Name</label>
+        <!-- for="name" HTML attribute'u aşağıdaki input'un id'si de name olduğu için sayfada label'a da tıklandığında input'un seçilmesini sağlar. -->
+        
+        <div class="col-5">
+            <input type="text" id="name" name="Name" class="form-control" />
+            <!-- name="Name" HTML attribute'u önemlidir çünkü controller action'ında string Name parametresi ile bu veri alınır. -->
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label for="description" class="col-2 col-form-label">Description</label>
+        <div class="col-5">
+            <textarea id="description" name="Description" class="form-control"></textarea>
+            <!-- name="Description" HTML attribute'u önemlidir çünkü controller action'ında string Description parametresi ile bu veri alınır. -->
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label for="unitprice" class="col-2 col-form-label">Unit Price</label>
+        <div class="col-5">
+            <input type="text" id="unitprice" name="UnitPrice" class="form-control" />
+            <!-- name="UnitPrice" HTML attribute'u önemlidir çünkü controller action'ında double UnitPrice parametresi ile bu veri alınır. -->
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label for="stockamount" class="col-2 col-form-label">Stock Amount</label>
+        <div class="col-5">
+            <input type="number" id="stockamount" name="StockAmount" class="form-control" />
+            <!-- name="StockAmount" HTML attribute'u önemlidir çünkü controller action'ında int StockAmount parametresi ile bu veri alınır. -->
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label for="expirationdate" class="col-2 col-form-label">Expiration Date</label>
+        <div class="col-5">
+            <input type="date" id="expirationdate" name="ExpirationDate" class="form-control" />
+            <!-- name="ExpirationDate" HTML attribute'u önemlidir çünkü controller action'ında DateTime? ExpirationDate parametresi ile bu veri alınır. -->
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label for="category" class="col-2 col-form-label">Category</label>
+        <div class="col-5">
+            <select id="category" name="CategoryId" class="form-control">
+                <option value="">-- Select --</option>
+                <option value="1">Computer</option>
+                <option value="2">Home Theater System</option>
+            </select>
+            <!-- name="CategoryId" HTML attribute'u önemlidir çünkü controller action'ında int? CategoryId parametresi ile option value üzerinden bu veri alınır. -->
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="offset-2 col-5"><!-- offset-2: yukarıdaki label'larda soldan 2 birim içerisinde başlıkları yazdırdığımızdan bu div içerisinde soldan 2 birim boşluk bırakılmasını sağlar. -->
+            <input type="submit" value="Save" class="btn btn-primary" /><!-- Formda mutlaka bir submit butonu olmalıdır ki form verileri sunucuya buton tıklandığında gönderilebilsin. -->
+            &nbsp;&nbsp;
+            <button type="reset" class="btn btn-outline-primary">Reset</button><!-- Reset butonu sayfayı ilk geldiği hale getirir. -->
+            &nbsp;&nbsp;
+            <a href="/Products/Index">Back to Product List</a>
+        </div>
+    </div>
+</form>*@
+
+
+
+@* HTML Helpers Form: *@
+@using (Html.BeginForm("Create", "Products", FormMethod.Post)) 
+@* 
+    Eğer form methodu belirtilmezse default'u post'tur. Eğer action ve controller belirtilmezse default olarak view'ın dönüldüğü controller ve action'a veri gönderir.
+    form HTML tag'ini burada açar. Genelde Html.BeginForm methodu using ile kullanılır.
+*@
+{
+    <div class="row mb-3">
+        @*@Html.Label("name", "Product Name", new { @class = "col-2 col-form-label"})*@ @* class CSS class'ını belirtir ve C#'ta anahtar kelime olduğundan @ ile escape'liyoruz. *@
+        @* Genelde HTML Helper'lar olarak Lambda Expression üzerinden view'daki modelin özelliklerinin kullanılmasını sağlayan For ile bitenler kullanılır. *@
+
+        @Html.LabelFor(model => model.Name, new { @class = "col-2 col-form-label"}) @* ProductModel'daki Name özelliğinin varsa DisplayName'ini (Product Name) yoksa kendi ismini (Name) yazdırır. *@
+
+        <div class="col-5">
+            @*@Html.TextBox("Name", null, new { @class = "form-control" })*@ @* null parametresi value'ya karşılık herhangi bir veri yazdırmayacağımız için kullanıldı. *@
+
+            @Html.TextBoxFor(model => model.Name, new { @class = "form-control" }) @* ProductModel'deki Name özelliği için type'ı text olan bir input oluşturur. *@
+        </div>
+    </div>
+    <div class="row mb-3">
+        @Html.LabelFor(model => model.Description, new { @class = "col-2 col-form-label"})
+        <div class="col-5">
+            @Html.TextAreaFor(model => model.Description, new { @class = "form-control" }) @* ProductModel'deki Description özelliği için bir textarea oluşturur. *@
+        </div>
+    </div>
+    <div class="row mb-3">
+        @Html.LabelFor(model => model.UnitPrice, new { @class = "col-2 col-form-label"})
+        <div class="col-5">
+            @Html.TextBoxFor(model => model.UnitPrice, new { @class = "form-control" }) 
+            @* 
+                ProductModel'deki UnitPrice özelliği için type'ı text olan bir input oluşturur. 
+                Kullanıcıdan veri alacağımız için sonu Display ile biten özellikler kullanılmamalıdır.
+            *@
+        </div>
+    </div>
+    <div class="row mb-3">
+        @Html.LabelFor(model => model.StockAmount, new { @class = "col-2 col-form-label"})
+        <div class="col-5">
+            @Html.TextBoxFor(model => model.StockAmount, new { @class = "form-control", type = "number" }) @* ProductModel'deki StockAmount özelliği için type'ı number olan bir input oluşturur. *@
+        </div>
+    </div>
+    <div class="row mb-3">
+        @Html.LabelFor(model => model.ExpirationDate, new { @class = "col-2 col-form-label"})
+        <div class="col-5">
+            @Html.TextBoxFor(model => model.ExpirationDate, new { @class = "form-control", type = "date" }) @* ProductModel'deki ExpirationDate özelliği için type'ı date olan bir input oluşturur. *@
+        </div>
+    </div>
+    <div class="row mb-3">
+        @Html.LabelFor(model => model.CategoryId, new { @class = "col-2 col-form-label"})
+        <div class="col-5">
+            @*@Html.DropDownListFor(model => model.CategoryId, null, "-- Select --", new { @class = "form-control" })*@ @* ProductModel'deki CategoryId özelliği için bir select oluşturur. *@
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="offset-2 col-5"><!-- offset-2: yukarıdaki label'larda soldan 2 birim içerisinde başlıkları yazdırdığımızdan bu div içerisinde soldan 2 birim boşluk bırakılmasını sağlar. -->
+            <button type="submit" class="btn btn-primary">Save</button><!-- Formda mutlaka bir submit butonu olmalıdır ki form verileri sunucuya buton tıklandığında gönderilebilsin. -->
+            &nbsp;&nbsp;
+            <input type="reset" value="Reset" class="btn btn-outline-primary" /><!-- Reset butonu sayfayı ilk geldiği hale getirir. -->
+            @* Butonlar için HTML Helper'lar bulunmamaktadır ancak eğer istenirse HTML Helper'ları kalıtım yoluyla yazılabilir. *@
+
+            &nbsp;&nbsp;
+
+            @Html.ActionLink("Back to Product List", "Index", "Products") 
+            @* 
+                Products controller'ının Index action'ına yönlendirme yapan link (a tag'i) oluşturur.
+                View, Products controller'ından geldiğini bildiği için controller parametresi gönderilmese de olur.
+            *@
+        </div>
+    </div>
+} @* form HTML tag'ini burada kapatır. *@
+@* Alternatif olarak using kullanmadan Html.BeginForm methodu kullanılabilir ancak bu durumda form HTML tag'inin kapanışı için Html.EndForm methodu kullanılmalıdır. *@

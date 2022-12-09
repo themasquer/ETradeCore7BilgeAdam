@@ -30,11 +30,13 @@
                                     // ViewBag ile ViewData yapı olarak aynıdır dolayısıyla birbirlerinin yerine kullanılabilir, sadece kullanımları 
                                     // aşağıda olduğu gibi farklıdır. Title anahtar değeri ViewData kolleksiyonunda ulaşacağımız verinin (Products) string olarak index'ini,
                                     // aynı zamanda ViewBag dinamik objesi üzerinden kullanırsak veriye (Products) ulaşacağımız özellik adını belirtir.
+    
+    //Layout = "_MyLayout"; // İstenilen layout oluşturulup burada atanarak bu view'ın kullanması sağlanabilir.
 }
 
 @* Aşağıda ister ViewBag ister ViewData kullanılabilir. h4 HTML tag'i içerisine Title için yukarıda atadığımız değeri yani Products'ı yazdırır. *@
 @*<h4>@ViewData["Title"]</h4>*@
-<h4>@ViewBag.Title</h4>
+<h1>@ViewBag.Title</h1>
 <hr />
 <table class="table">
     <thead>
@@ -60,7 +62,7 @@
                 @Html.DisplayNameFor(model => model.StockAmount)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ExpirationDateDisplay)
+                @Html.DisplayNameFor(model => model.ExpirationDateDisplay) (Year/Month/Day) @* Bu kullanımda herhangi bir boşluktan sonra Razor C# yazımı sona erer. *@
                 @*
                     DateTime olan ExpirationDate'i değil servisin Query methodunda formatladığımız string olan ExpirationDateDisplay'i
                     kullanmak daha uygundur.
