@@ -45,6 +45,7 @@ namespace MvcWebUI.Controllers
 
 
         [HttpPost] // post methodu ile veri gönderen HTML form'unun veya isteklerin (request) verilerinin sunucu tarafından alınmasını sağlar. post işlemleri için yazmak zorunludur.
+        [ValidateAntiForgeryToken] // View'da AntiforgeryToken HTML Helper'ı ile oluşturulan token'ın validasyonunu sağlayan attribute'tur. 
         //public IActionResult Create(string Name, string Description, double UnitPrice, int StockAmount, DateTime? ExpirationDate, int? CategoryId)
         public IActionResult Create(ProductModel product)
         // form verileri name ile belirtilen input HTML elemanları üzerinden parametre olarak alınabildiği gibi bu özellikler ProductModel'in içerisinde olduğundan
