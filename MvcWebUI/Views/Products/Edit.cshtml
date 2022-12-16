@@ -1,0 +1,206 @@
+﻿@model ProductModel
+@*Model namespace using directive should be added to _ViewImports.cshtml.*@
+
+@{
+    ViewData["Title"] = "Edit Existing Product";
+}
+
+<h1>@ViewData["Title"]</h1>
+<hr />
+<h4>Product</h4>
+<hr />
+<div class="row">
+    <div class="col-12">
+
+        <form asp-action="Edit" asp-controller="Products" method="post" autocomplete="off">
+		<!-- 
+			form Tag Helper'ı: Tag Helper'lar HTML tag'leri üzerinden asp- ile kullanılır.
+			HTML tag'lerinde kullanıldıklarından kullanımları HTML Helper'lara göre daha kolaydır ve istenilen HTML attrbiute'ları ile birlikte kullanılabilir.
+			Tag Helper'ların ASP.NET Core MVC projelerinde kullanılabilmeleri için Views -> ViewImports altına addTagHelper ile eklenmeleri gerekmektedir.
+			Bir view'da Tag Helper ile HTML Helper'lar bir arada kullanılabilir.
+			Edit view'ı ProductsController'dan geldiğini bildiği için Tag Helper'da her zaman controller belirtmeye gerek yoktur.
+			form Tag Helper'ının default methodu post olduğu için Tag Helper'da her zaman belirtmeye gerek yoktur.
+			method HTML attribute'unda olduğu gibi istenilen HTML attribute'ları Tag Helper'larla kolay bir şekilde kullanılabilir.
+		-->
+
+		@Html.AntiForgeryToken()
+
+            <div asp-validation-summary="All" class="text-danger"></div>
+			<!--
+				Model'deki hataların data annotation'lar üzerinden özet gösterimi asp-validation-summary Tag Helper'ı ile gerçekleştirilebilir.
+				asp-validation-summary'nin All yapılmasına dikkat edilmelidir. Bootstrap text-danger class'ı ile rengin kırmızı olmasını sağladık.
+			-->
+
+            <div class="row mb-3">
+
+                <label asp-for="Name" class="col-2 col-form-label"></label>
+				<!-- 
+					asp-for Tag Helper'ı ile Model özellikleri için HTML elemanları oluşturulur. 
+					Bootstrap col-2 class'ı ile iki birimlik sütunu label için ayırdık.	
+					Eğer varsa özelliğin DisplayName'ini (Product Name) yoksa adını (Name) yazdırır.
+				-->
+
+				<div class="col-5"><!-- Bootstrap col-5 class'ı ile de beş birimlik sütunu text box input'u için ayırdık. -->
+
+					<input asp-for="Name" class="form-control" />
+					<!--
+						asp-for atanan özelliğin tipine göre HTML elemanı oluşturur, Name özelliği string tipinde olduğu için text box oluşturacaktır,
+						dolayısıyla ProductModel'deki Name özelliği için bir text box oluşturulacaktır.
+						Bootstrap form-control class'ı ile içinde bulunduğu div'i yatay olarak kaplamasını sağladık.
+						Name özelliği üzerinden controller'ın post action'ına kullanıcının girdiği veri gönderilecektir.
+					-->
+
+					<span asp-validation-for="Name" class="text-danger"></span>
+					<!--
+						Model özelliklerindeki data annotation'lar ile yazdırılacak validasyon hata mesajları istenirse HTML input elemanlarının altında 
+						bir yukarıdaki şekilde gösterilebilir.
+					-->
+
+				</div>
+            </div>
+            <div class="row mb-3">
+
+                <label asp-for="Description" class="col-2 col-form-label"></label>
+				<!--
+					Eğer varsa özelliğin DisplayName'ini yoksa adını (Description) yazdırır.
+				-->
+
+				<div class="col-5">
+
+					<textarea asp-for="Description" class="form-control" rows="4"></textarea>
+					<!-- 
+						Description özelliği üzerinden controller'ın post action'ına kullanıcının girdiği veri gönderilecektir.
+					-->
+
+					<span asp-validation-for="Description" class="text-danger"></span>
+					<!--
+						Description özelliği üzerinden data annotation'larla validasyon yapılıp eğer hata varsa burada gösterilecektir.
+					-->
+
+				</div>
+            </div>
+            <div class="row mb-3">
+
+                <label asp-for="UnitPrice" class="col-2 col-form-label"></label>
+				<!--
+					Eğer varsa özelliğin DisplayName'ini (Unit Price) yoksa adını (UnitPrice) yazdırır.
+				-->
+
+				<div class="col-5">
+
+					<input asp-for="UnitPrice" class="form-control" />
+					<!--
+						UnitPrice özelliği üzerinden controller'ın post action'ına kullanıcının girdiği veri gönderilecektir.
+						Genelde ondalık tipte veriler için text box kullanılır.
+					-->
+
+					<span asp-validation-for="UnitPrice" class="text-danger"></span>
+					<!--
+						UnitPrice özelliği üzerinden data annotation'larla validasyon yapılıp eğer hata varsa burada gösterilecektir.
+					-->
+
+				</div>
+            </div>
+            <div class="row mb-3">
+
+                <label asp-for="StockAmount" class="col-2 col-form-label"></label>
+				<!--
+					Eğer varsa özelliğin DisplayName'ini (Stock Amount) yoksa adını (StockAmount) yazdırır.
+				-->
+
+				<div class="col-5">
+					<input asp-for="StockAmount" class="form-control" />
+					<!--
+						StockAmount özelliği üzerinden controller'ın post action'ına kullanıcının girdiği veri gönderilecektir.
+						StockAmount özelliğinin tipi int olduğundan otomatik olarak numeric up down input'u oluşacaktır.
+					-->
+
+					<span asp-validation-for="StockAmount" class="text-danger"></span>
+					<!--
+						StockAmount özelliği üzerinden data annotation'larla validasyon yapılıp eğer hata varsa burada gösterilecektir.
+					-->
+
+				</div>
+            </div>
+            <div class="row mb-3">
+
+                <label asp-for="ExpirationDate" class="col-2 col-form-label"></label>
+				<!--
+					Eğer varsa özelliğin DisplayName'ini (Expiration Date) yoksa adını (ExpirationDate) yazdırır.
+				-->
+
+				<div class="col-5">
+
+					<input asp-for="ExpirationDate" class="form-control" type="text" />
+					<!--
+						ExpirationDate özelliği üzerinden controller'ın post action'ına kullanıcının girdiği veri gönderilecektir.
+						ExpirationDate özelliğinin tipi DateTime olduğundan otomatik olarak tarih ve saat input'u oluşacaktır.
+						Burada üçüncü parti (third party: Microsoft tarafından geliştirilmeyen, başka firma ya da kişiler tarafından geliştirilen) 
+						bir takvim CSS-Javascript kütüphanesi kullanacağımızdan type'ı text yapıyoruz ve form tag'inin autocomplete özelliğini
+						daha önce girilen tarih verilerinin metinsel olarak tarayıcının cache'inden (tarayıcı tarafından saklanan geçmiş kayıtları) 
+						gelmemesi için off atayarak kapatıyoruz.
+					-->
+
+					@*<span asp-validation-for="ExpirationDate" class="text-danger"></span>*@
+					<!--
+						ExpirationDate özelliği üzerinden data annotation'larla validasyon yapılıp eğer hata varsa burada gösterilecektir.
+						Bu özellik için herhangi bir data annotation kullanmadığımızdan validation span'ını yazmasak da olur.
+					-->
+
+				</div>
+            </div>
+            <div class="row mb-3">
+
+                <label asp-for="CategoryId" class="col-2 col-form-label"></label>
+				<!--
+					Eğer varsa özelliğin DisplayName'ini (Category) yoksa adını (CategoryId) yazdırır.
+				-->
+
+				<div class="col-5">
+
+					<select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId">
+						<option value="">-- Select --</option>
+					</select>
+					<!-- 
+						CategoryId özelliği üzerinden controller'ın post action'ına kullanıcının seçtiği veri gönderilecektir.
+						asp-items ile action'da doldurduğumuz ve ViewBag ile view'a taşıdığımız kategori listesi select tag'inde oluşturulur.
+						Eğer istenirse value'su "" olan bir option eklenerek seçiniz (-- Select --) elemanı kullanılabilir.
+					-->
+
+					<span asp-validation-for="CategoryId" class="text-danger"></span>
+					<!--
+						CategoryId özelliği üzerinden data annotation'larla validasyon yapılıp eğer hata varsa burada gösterilecektir.
+					-->
+
+				</div>
+            </div>
+
+            <input type="hidden" asp-for="Id" />
+			<!--
+				Edit formu üzerinden güncelleme işlemi yapacağımızdan kaydın Id üzerinden tabloda bulunması ve güncellenmesi için mutlaka Id özelliği 
+				type'ı hidden (kullanıcıya gösterilmeyecek) şekilde oluşturulmalı dolayısıyla form üzerinden action'a gönderilmelidir.
+			-->
+            
+            <div class="row mb-3">
+				<div class="offset-2 col-5"><!-- offset-2: yukarıdaki label'larda soldan 2 birim içerisinde başlıkları yazdırdığımızdan bu div içerisinde soldan 2 birim boşluk bırakılmasını sağlar. -->
+					
+					<input type="submit" value="Save" class="btn btn-primary" /><!-- Formda mutlaka bir submit butonu olmalıdır ki form verileri sunucuya buton tıklandığında gönderilebilsin. -->
+					&nbsp;&nbsp;
+					<button type="reset" class="btn btn-outline-primary">Reset</button><!-- Reset butonu sayfayı ilk geldiği hale getirir. -->
+					@* Butonlar için Tag Helper'lar bulunmamaktadır ancak eğer istenirse Tag Helper'ları kalıtım yoluyla yazılabilir. *@
+
+					&nbsp;&nbsp;
+					<a asp-action="Index" asp-controller="Products">Back to Product List</a>
+					<!--
+						ProductsController'ının Index action'ına yönlendiren bir link oluşturur. View ProductsController'dan geldiğini bildiği için controller belirtmeye gerek yoktur.
+					-->
+
+				</div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+

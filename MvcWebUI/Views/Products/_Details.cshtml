@@ -1,0 +1,42 @@
+﻿@model ProductModel
+
+<h4>Product</h4>
+<hr />
+<dl class="row"><!-- Genelde solda başlık sağda veri yapısı şekilnde detay kayıtlarının gösterimi için dl HTML tag'i içerisinde başlık için dt, veri içinse dd HTML tag'leri kullanılır. -->
+    <dt class="col-2"><!-- Bootstrap class'ı: 2 birim başlık için kullan. -->
+        @Html.DisplayNameFor(model => model.Name)
+    </dt>
+    <dd class="col-10"><!-- Bootstrap class'ı: 10 birim veri için kullan. -->
+        @Html.DisplayFor(model => model.Name)
+    </dd>
+    <dt class="col-2">
+        @Html.DisplayNameFor(model => model.Description)
+    </dt>
+    <dd class="col-10">
+        @Html.DisplayFor(model => model.Description)
+    </dd>
+    <dt class="col-2">
+        @Html.DisplayNameFor(model => model.UnitPriceDisplay)
+    </dt>
+    <dd class="col-10">
+        $@Html.DisplayFor(model => model.UnitPriceDisplay)
+    </dd>
+    <dt class="col-2">
+        @Html.DisplayNameFor(model => model.StockAmount)
+    </dt>
+    <dd class="col-10">
+        @Html.DisplayFor(model => model.StockAmount)
+    </dd>
+    <dt class="col-2">
+        @Html.DisplayNameFor(model => model.ExpirationDateDisplay) (Year/Month/Day)
+    </dt>
+    <dd class="col-10">
+        @Html.DisplayFor(model => model.ExpirationDateDisplay)
+    </dd>
+    <dt class="col-2">
+        @Html.DisplayNameFor(model => model.CategoryNameDisplay)
+    </dt>
+    <dd class="col-10">
+        @Html.DisplayFor(model => model.CategoryNameDisplay)
+    </dd>
+</dl>

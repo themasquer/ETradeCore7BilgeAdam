@@ -35,7 +35,7 @@ eðer istenirse MvcWebUI katmanýnda view'larda kullanýlmak üzere formatlama, iliþ
 veritabaný iþlemleri gerçekleþtirmek için AppCore'daki IService'i implemente eden interface'ler ile bu interface'leri implemente
 eden concrete (somut) service'ler oluþturulur ve MvcWebUI katmanýnda Program.cs'teki IoC Container'da baðýmlýlklarý yönetilir.
 
-10) MvcWebUI katmanýnda yönetilecek model için controller ve ilgili view'larý oluþturularak ilgili service constructor üzerinden enjekte edilir
+10) MvcWebUI katmanýnda yönetilecek model için controller ile ilgili action ve view'larý oluþturularak ilgili service constructor üzerinden enjekte edilir
 ve controller action'larýnda methodlarý kullanýlarak model objeleri üzerinden iþlemler (örneðin CRUD) gerçekleþtirilir.
 
 View <-> Controller (Action) <-> Service (Model) <-> Repository (Entity) <-> DbContext (Entity) <-> Database
@@ -51,7 +51,20 @@ Konu Anlatýmlý Proje Geliþtirme Aþamalarý:
 2) DataAccess -> Contexts -> ETradeContext (MvcWebUI -> Program.cs -> IoC Container ile MvcWebUI -> appsettings.json veya istenirse appsetting.Development.json -> ConnectionStrings)
 3) DataAccess -> Repositories -> ProductRepo (MvcWebUI -> Program.cs -> IoC Container)
 4) Business -> Models -> ProductModel
-5) Business -> Services -> ProductService (MvcWebUI -> Program.cs -> IoC Container)
-6) MvcWebUI -> Controllers -> ProductsController
+5) Business -> Services -> ProductService -> Query (MvcWebUI -> Program.cs -> IoC Container)
+6) MvcWebUI -> Controllers -> ProductsController -> Index
 7) MvcWebUI -> Views -> Products -> Index.cshtml
-8) MvcWebUI -> Views -> Products -> Create.cshtml
+8) MvcWebUI -> Controllers -> ProductsController -> Details
+9) MvcWebUI -> Views -> Products -> Details.cshtml
+10) Business -> Services -> ProductService -> Add
+11) MvcWebUI -> Controllers -> ProductsController -> Create
+12) MvcWebUI -> Views -> Products -> Create.cshtml
+13) DataAccess -> Repositories -> CategoryRepo (MvcWebUI -> Program.cs -> IoC Container)
+14) Business -> Models -> CategoryModel
+15) Business -> Services -> CategoryService (MvcWebUI -> Program.cs -> IoC Container)
+16) Business -> Services -> ProductService -> Update
+17) MvcWebUI -> Controllers -> ProductsController -> Edit
+18) MvcWebUI -> Views -> Products -> Edit.cshtml
+19) Business -> Services -> ProductService -> Delete
+20) MvcWebUI -> Controllers -> ProductsController -> Delete
+21) MvcWebUI -> Views -> Products -> Delete.cshtml

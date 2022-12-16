@@ -51,8 +51,12 @@ builder.Services.AddDbContext<ETradeContext>(options => options.UseSqlServer(con
 builder.Services.AddScoped<ProductRepoBase, ProductRepo>(); // projede herhangi bir class'ta ProductRepoBase tipinde constructor injection yapýldýðýnda
                                                             // ProductRepo objesini new'leyerek o class'a enjekte eder.
 
+builder.Services.AddScoped<CategoryRepoBase, CategoryRepo>(); 
+
 builder.Services.AddScoped<IProductService, ProductService>(); // projede herhangi bir class'ta IProductService tipinde constructor injection yapýldýðýnda
                                                                // ProductService objesini new'leyerek o class'a enjekte eder.
+
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 #endregion
 
 var app = builder.Build();

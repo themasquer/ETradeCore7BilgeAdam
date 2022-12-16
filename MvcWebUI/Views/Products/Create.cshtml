@@ -61,7 +61,7 @@
     <div class="row mb-3">
         <label for="category" class="col-2 col-form-label">Category</label>
         <div class="col-5">
-            <select id="category" name="CategoryId" class="form-control">
+            <select id="category" name="CategoryId" class="form-select">
                 <option value="">-- Select --</option>
                 <option value="1">Computer</option>
                 <option value="2">Home Theater System</option>
@@ -93,6 +93,18 @@
     @* 
         Bu sayfa dışında başka biri tarafından oluşturulan bir sayfa veya istek üzerinden veri gönderilmesini (sahtekarlık) engellemek için kullanılır 
         ve ilgili aksiyonda ValidateAntiForgeryToken attribute'u ile kontrol edilir. Token (jeton) temel olarak şifreli bir metinsel veridir.
+    *@
+
+    @*@if (ViewBag.Message is not null)
+    {
+        <p class="text-danger">@ViewBag.Message</p>
+    }*@
+    @* 
+        Create POST action'ında hatalı işlem sonucunda ViewBag.Message'ı atadık ve burada önce dolu mu diye kontrol ediyoruz, 
+        doluysa kırmızı renk stiline sahip bir p tag'i içerisine yazdırıyoruz. Bu view Create GET action'ı ile de dönecektir
+        ve bu action'da ViewBag.Message'ı atamadığımızdan null olacaktır, bu yüzden de p tag'ini yazdırmaya gerek yoktur.
+        ViewBag veya ViewData üzerinden hata mesajlarını view'a action'dan taşımak yerine view'da validation summary kullanarak
+        action'da da ModelState.AddModelError methodunu kullanmak kolaylık sağlar.
     *@
 
     @Html.ValidationSummary(false, null, new { @class = "text-danger" }) 
@@ -152,12 +164,20 @@
     <div class="row mb-3">
         @Html.LabelFor(model => model.CategoryId, new { @class = "col-2 col-form-label"})
         <div class="col-5">
-            @*@Html.DropDownListFor(model => model.CategoryId, null, "-- Select --", new { @class = "form-control" })*@ @* ProductModel'deki CategoryId özelliği için bir select oluşturur. *@
+            @Html.DropDownListFor(model => model.CategoryId, ViewBag.Categories as SelectList, "-- Select --", new { @class = "form-select" }) 
+            @* 
+                ProductModel'deki CategoryId özelliği için bir select oluşturur. 
+                İkinci parametre üzerinden action'da atanan ViewBag.Categories (ViewData["Categories"] de kullanılabilir) objesini new'lenen SelectList tipine dönüştür.
+                Üçüncü parametre üzerinden açılır listenin en başına select (seçiniz) option'ını ekle.
+                Dördüncü parametre üzerinden de Bootstrap form-select class'ını oluşturulacak select HTML tag'inin class'ı olarak kullan.
+            *@
+
             @Html.ValidationMessageFor(model => model.CategoryId, null, new { @class = "text-danger" })
         </div>
     </div>
     <div class="row mb-3">
         <div class="offset-2 col-5"><!-- offset-2: yukarıdaki label'larda soldan 2 birim içerisinde başlıkları yazdırdığımızdan bu div içerisinde soldan 2 birim boşluk bırakılmasını sağlar. -->
+            
             <button type="submit" class="btn btn-primary">Save</button><!-- Formda mutlaka bir submit butonu olmalıdır ki form verileri sunucuya buton tıklandığında gönderilebilsin. -->
             &nbsp;&nbsp;
             <input type="reset" value="Reset" class="btn btn-outline-primary" /><!-- Reset butonu sayfayı ilk geldiği hale getirir. -->

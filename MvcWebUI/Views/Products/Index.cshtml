@@ -38,6 +38,25 @@
 @*<h4>@ViewData["Title"]</h4>*@
 <h1>@ViewBag.Title</h1>
 <hr />
+
+<p>
+    @Html.ActionLink("Create New Product", "Create", "Products") 
+    @* 
+        Products controller'ının Create GET action'ına yönlendiren link, 
+        controller (Products) parametresi yazılmaza da olur çünkü hangi controller'dan döndüğünü view biliyor. 
+    *@
+</p>
+
+@if (TempData["Message"] is not null)
+{
+    <p class="text-danger">@TempData["Message"]</p>
+}
+@*
+    Create, Edit ve Delete POST action'larında hatalı veya başarılı işlem sonucunda TempData["Message"]'ı atadık ve burada önce dolu mu diye kontrol ediyoruz,
+    doluysa kırmızı renk stiline sahip bir p tag'i içerisine yazdırıyoruz. Bu view Index GET action'ı ile de dönecektir
+    ve bu action'da TempData["Message"]'ı atamadığımızdan null olacaktır, bu yüzden de p tag'ini yazdırmaya gerek yoktur.
+*@
+
 <table class="table">
     <thead>
         <!-- Sütun başlıkları -->
@@ -71,6 +90,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.CategoryNameDisplay)
             </th>
+            <th></th><!-- boş bir sütun oluşturduk ki aşağıda her bir ürün için Details, Edit ve Delete link'lerini içerisine koyabilelim -->
         </tr>
     </thead>
     <tbody>
@@ -97,6 +117,30 @@
                 </td>
                 <td>
                     @Html.DisplayFor(model => product.CategoryNameDisplay)
+                </td>
+                <td>
+                    @Html.ActionLink("Details", "Details", new { id = product.Id })
+                    @* 
+                        Products controller'ının Details action'ına id parametresini göndermemiz gerekiyor ki id üzerinden tek bir ürün kaydına ulaşılabilsin, 
+                        id'yi gönderebilmek için ActionLink HTML Helper'ın son parametresi olarak bir route value anonymous (herhangi bir tipi mesela class'ı olmayan) objesi oluşturduk
+                        ve Details action'ının ihtiyacı olan id parametresini elle özellik olarak tanımladık (id) ve döngünün her bir turundaki ürün id (product.Id) değerini atadık.
+                    *@
+                    &nbsp;|&nbsp;
+
+                    @Html.ActionLink("Edit", "Edit", new { id = product.Id })
+                    @*
+                        Products controller'ının Edit action'ına id parametresini göndermemiz gerekiyor ki id üzerinden tek bir ürün kaydına ulaşılabilsin,
+                        id'yi gönderebilmek için ActionLink HTML Helper'ın son parametresi olarak bir route value anonymous objesi oluşturduk
+                        ve Edit action'ının ihtiyacı olan id parametresini elle özellik olarak tanımladık (id) ve döngünün her bir turundaki ürün id (product.Id) değerini atadık.
+                    *@
+                    &nbsp;|&nbsp;
+
+                    @Html.ActionLink("Delete", "Delete", new { id = product.Id })
+                    @*
+                        Products controller'ının Delete action'ına id parametresini göndermemiz gerekiyor ki id üzerinden tek bir ürün kaydına ulaşılabilsin,
+                        id'yi gönderebilmek için ActionLink HTML Helper'ın son parametresi olarak bir route value anonymous objesi oluşturduk
+                        ve Delete action'ının ihtiyacı olan id parametresini elle özellik olarak tanımladık (id) ve döngünün her bir turundaki ürün id (product.Id) değerini atadık.
+                    *@
                 </td>
             </tr>
         }
