@@ -24,7 +24,7 @@ namespace Business.Models
 
         #region View'larda Gösterim için Kullanacağımız Özellikler
         [DisplayName("Products Count")]
-        public int ProductsCountDisplay { get; set; }
+        public int ProductsCount { get; set; }
         #endregion
     }
 }

@@ -1,18 +1,17 @@
 ﻿#nullable disable
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using DataAccess.Contexts;
-using DataAccess.Entities;
-using Business.Services;
 using Business.Models;
+using Business.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MvcWebUI.Controllers
 {
+    // MvcWebUI projesinde Controllers klasörü seçilerek fareye sağ tıklanıp Add -> Controller -> MVC Controller with views, using Entity Framework
+    // seçildikten sonra Model class olarak Category (mutlaka entity seçilmeli), Data context class olarak da ETicaretContext seçildikten sonra
+    // action view'larının da oluşturulması için Generate views işaretlenir, ilk aşamada client side validation yapmayacağımız için Reference script libraries
+    // seçilmeden Use a layout page işaretlenip projenin tanımlanmış layout view'ının kullanılması için boş bırakılarak, son olarak da Controller name
+    // istenilirse değiştirilip scaffolding ile controller, action'ları ve view'larının oluşturulması sağlanabilir.
+    // Daha sonra da controller'da belirtilen yönlendirmeler üzerinden kodlar yazılır.
+
     public class CategoriesController : Controller
     {
         // Add service injections here
@@ -26,17 +25,17 @@ namespace MvcWebUI.Controllers
         // GET: Categories
         public IActionResult Index()
         {
-            List<CategoryModel> categoryList = null; // TODO: Add get list service logic here
+            List<CategoryModel> categoryList = _categoryService.Query().ToList(); // Add get list service logic here
             return View(categoryList);
         }
 
         // GET: Categories/Details/5
         public IActionResult Details(int id)
         {
-            CategoryModel category = null; // TODO: Add get item service logic here
+            CategoryModel category = _categoryService.Query().SingleOrDefault(c => c.Id == id); // Add get item service logic here
             if (category == null)
             {
-                return NotFound();
+                return View("_Error", "Category not found!");
             }
             return View(category);
         }
@@ -45,6 +44,9 @@ namespace MvcWebUI.Controllers
         public IActionResult Create()
         {
             // Add get related items service logic here to set ViewData if necessary and update null parameter in SelectList with these items
+
+            // burada kategori dışında kullanacağımız herhangi bir model verimiz olmadığı ve bunları view'a taşımamız gerekmediği için ViewBag veya ViewData kullanmadık.
+
             return View();
         }
 
@@ -57,8 +59,11 @@ namespace MvcWebUI.Controllers
         {
             if (ModelState.IsValid)
             {
-                // TODO: Add insert service logic here
-                return RedirectToAction(nameof(Index));
+                // Add insert service logic here
+                var result = _categoryService.Add(category);
+                if (result.IsSuccessful)
+                    return RedirectToAction(nameof(Index));
+                ModelState.AddModelError("", result.Message);
             }
             // Add get related items service logic here to set ViewData if necessary and update null parameter in SelectList with these items
             return View(category);
@@ -67,10 +72,10 @@ namespace MvcWebUI.Controllers
         // GET: Categories/Edit/5
         public IActionResult Edit(int id)
         {
-            CategoryModel category = null; // TODO: Add get item service logic here
+            CategoryModel category = _categoryService.Query().SingleOrDefault(c => c.Id == id); // Add get item service logic here
             if (category == null)
             {
-                return NotFound();
+                return View("_Error", "Category not found!");
             }
             // Add get related items service logic here to set ViewData if necessary and update null parameter in SelectList with these items
             return View(category);
@@ -85,8 +90,11 @@ namespace MvcWebUI.Controllers
         {
             if (ModelState.IsValid)
             {
-                // TODO: Add update service logic here
-                return RedirectToAction(nameof(Index));
+                // Add update service logic here
+                var result = _categoryService.Update(category);
+                if (result.IsSuccessful)
+                    return RedirectToAction(nameof(Details), new { id = category.Id }); // Index action'ına dönmek yerine route value olarak id tanımlayarak Details action'ına dönüyoruz
+                ModelState.AddModelError("", result.Message);
             }
             // Add get related items service logic here to set ViewData if necessary and update null parameter in SelectList with these items
             return View(category);
@@ -95,10 +103,10 @@ namespace MvcWebUI.Controllers
         // GET: Categories/Delete/5
         public IActionResult Delete(int id)
         {
-            CategoryModel category = null; // TODO: Add get item service logic here
+            CategoryModel category = _categoryService.Query().SingleOrDefault(c => c.Id == id); // Add get item service logic here
             if (category == null)
             {
-                return NotFound();
+                return View("_Error", "Category not found!");
             }
             return View(category);
         }
@@ -108,7 +116,9 @@ namespace MvcWebUI.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            // TODO: Add delete service logic here
+            // Add delete service logic here
+            var result = _categoryService.Delete(id);
+            TempData["Message"] = result.Message;
             return RedirectToAction(nameof(Index));
         }
 	}

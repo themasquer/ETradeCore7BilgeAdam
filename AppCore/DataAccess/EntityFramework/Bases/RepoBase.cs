@@ -65,6 +65,8 @@ namespace AppCore.DataAccess.EntityFramework.Bases
         // Create işlemi: gönderilen entity'yi DbSet'e ekler ve eğer save parametresi true ise değişikliği Save methodu üzerinden veritabanına yansıtır.
         public virtual void Add(TEntity entity, bool save = true)
         {
+            entity.Guid = Guid.NewGuid().ToString(); // her eklenecek kayıt için tekil bir Guid oluşturup entity'e atıyoruz ki istenirse Id yerine Guid üzerinden de işlemler yapılabilsin
+
             //DbContext.Set<TEntity>().Add(entity); // aşağıdaki satır ile de ekleme işlemi yapılabilir.
             DbContext.Add(entity);
 

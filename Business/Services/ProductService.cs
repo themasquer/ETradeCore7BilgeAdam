@@ -83,8 +83,8 @@ namespace Business.Services
                                                                                    // veritabanındaki tabloda kontrol eder, varsa true yoksa false döner.
                                                                                    // All LINQ methodu ise belirtilen koşul veya koşullara veritabanındaki tabloda tüm kayıtlar
                                                                                    // uyuyor mu diye kontrol eder, uyuyorsa true uymuyorsa false döner.
-                return new ErrorResult("Product with the same name exists!"); // bu ürün adına sahip kayıt bulunmaktadır mesajını içeren ErrorResult objesini dönüyoruz
-                                                                              // ki ilgili controller action'ında kullanabilelim.
+                return new ErrorResult("Product can't be added because product with the same name exists!"); 
+                // bu ürün adına sahip kayıt bulunmaktadır mesajını içeren ErrorResult objesini dönüyoruz ki ilgili controller action'ında kullanabilelim.
 
 
 
@@ -134,9 +134,9 @@ namespace Business.Services
         public Result Update(ProductModel model) // Update işlemi: model kullanıcının view üzerinden doldurup gönderdiği objedir 
 		{
 			if (Query().Any(p => p.Name.ToUpper() == model.Name.ToUpper().Trim() && p.Id != model.Id)) 
-				return new ErrorResult("Product with the same name exists!"); // güncellenen ürün dışında (yukarıda Id üzerinden bu koşulu ekledik) bu ürün adına sahip kayıt
-																			  // bulunmaktadır mesajını içeren ErrorResult objesini dönüyoruz ki ilgili controller
-																			  // action'ında kullanabilelim.
+				return new ErrorResult("Product can't be updated because product with the same name exists!"); 
+                // güncellenen ürün dışında (yukarıda Id üzerinden bu koşulu ekledik) bu ürün adına sahip kayıt bulunmaktadır mesajını içeren ErrorResult objesini
+                // dönüyoruz ki ilgili controller action'ında kullanabilelim.
 
 			Product entity = new Product() // bu satırda yukarıdaki koşullara uyan kayıt bulunmadığı için kullanıcının gönderdiği verileri içeren model objesi
 										   // üzerinden bir entity objesi oluşturuyoruz (mapping işlemi).

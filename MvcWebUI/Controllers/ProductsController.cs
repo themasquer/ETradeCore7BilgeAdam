@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace MvcWebUI.Controllers
 {
-    public class ProductsController : Controller
+    public class ProductsController : Controller // controller class isimleri mutlaka Controller ile bitmelidir, tarayıcının adresi veya link üzerinden çağrılırken ise Controller yazılmaz.
     {
         private readonly IProductService _productService; // controller'da ürünle ilgili işleri gerçekleştirebilmek için servis alanı tanımlanır ve constructor üzerinden enjekte edilir.
 

@@ -68,3 +68,9 @@ Konu Anlatýmlý Proje Geliþtirme Aþamalarý:
 19) Business -> Services -> ProductService -> Delete
 20) MvcWebUI -> Controllers -> ProductsController -> Delete
 21) MvcWebUI -> Views -> Products -> Delete.cshtml
+
+22) MvcWebUI -> Controllers -> Categories -> MVC Controller Entity Framework Scaffolding
+23) Business -> Services -> CategoryService -> Query
+24) Business -> Services -> CategoryService -> Add
+25) Business -> Services -> CategoryService -> Update
+26) Business -> Services -> CategoryService -> Delete
