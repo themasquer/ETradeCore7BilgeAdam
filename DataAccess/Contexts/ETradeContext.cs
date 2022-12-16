@@ -11,6 +11,7 @@ namespace DataAccess.Contexts
 
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Store> Stores { get; set; }
 
         public ETradeContext(DbContextOptions options) : base(options) // options parametresi MvcWebUI katmanındaki Program.cs IoC Container'ında AddDbContext methodu ile
                                                                        // bağımlılığı yönetilen ve appsettings.json veya appsettings.Development.json dosyalarında

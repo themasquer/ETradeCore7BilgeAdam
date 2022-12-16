@@ -48,7 +48,8 @@ bir controller ve aksiyonu yazýlabilir.
 
 Konu Anlatýmlý Proje Geliþtirme Aþamalarý:
 1) DataAccess -> Entities -> Product ve Category entity'leri
-2) DataAccess -> Contexts -> ETradeContext (MvcWebUI -> Program.cs -> IoC Container ile MvcWebUI -> appsettings.json veya istenirse appsetting.Development.json -> ConnectionStrings)
+2) DataAccess -> Contexts -> ETradeContext -> Products ve Categories DbSet'leri
+(MvcWebUI -> Program.cs -> IoC Container ile MvcWebUI -> appsettings.json veya istenirse appsetting.Development.json -> ConnectionStrings)
 3) DataAccess -> Repositories -> ProductRepo (MvcWebUI -> Program.cs -> IoC Container)
 4) Business -> Models -> ProductModel
 5) Business -> Services -> ProductService -> Query (MvcWebUI -> Program.cs -> IoC Container)
@@ -61,7 +62,7 @@ Konu Anlatýmlý Proje Geliþtirme Aþamalarý:
 12) MvcWebUI -> Views -> Products -> Create.cshtml
 13) DataAccess -> Repositories -> CategoryRepo (MvcWebUI -> Program.cs -> IoC Container)
 14) Business -> Models -> CategoryModel
-15) Business -> Services -> CategoryService (MvcWebUI -> Program.cs -> IoC Container)
+15) Business -> Services -> CategoryService -> Query (MvcWebUI -> Program.cs -> IoC Container)
 16) Business -> Services -> ProductService -> Update
 17) MvcWebUI -> Controllers -> ProductsController -> Edit
 18) MvcWebUI -> Views -> Products -> Edit.cshtml
@@ -70,7 +71,16 @@ Konu Anlatýmlý Proje Geliþtirme Aþamalarý:
 21) MvcWebUI -> Views -> Products -> Delete.cshtml
 
 22) MvcWebUI -> Controllers -> Categories -> MVC Controller Entity Framework Scaffolding
-23) Business -> Services -> CategoryService -> Query
-24) Business -> Services -> CategoryService -> Add
-25) Business -> Services -> CategoryService -> Update
-26) Business -> Services -> CategoryService -> Delete
+23) Business -> Services -> CategoryService -> Add
+24) Business -> Services -> CategoryService -> Update
+25) Business -> Services -> CategoryService -> Delete
+
+26) DataAccess -> Entities -> Store entity
+27) DataAccess -> Contexts -> ETradeContext -> Stores DbSet'i
+28) DataAccess -> Repositories -> StoreRepo (MvcWebUI -> Program.cs -> IoC Container)
+29) Business -> Models -> StoreModel
+30) Business -> Services -> StoreService -> Query (MvcWebUI -> Program.cs -> IoC Container)
+31) Business -> Services -> StoreService -> Add
+32) Business -> Services -> StoreService -> Update
+33) Business -> Services -> StoreService -> Delete
+34) MvcWebUI -> Controllers -> Stores -> MVC Controller Entity Framework Scaffolding

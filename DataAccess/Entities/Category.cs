@@ -13,6 +13,6 @@ namespace DataAccess.Entities
 
         public string Description { get; set; }
 
-        public List<Product> Products { get; set; } // başka entity kolleksiyonuna referans
+        public List<Product> Products { get; set; } // 1 to many ilişkili başka entity kolleksiyonuna referans, 1 kategorinin 0 veya daha çok ürünleri olabilir
     }
 }

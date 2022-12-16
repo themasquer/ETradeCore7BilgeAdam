@@ -38,12 +38,12 @@ namespace Business.Services
         {
             if (_categoryRepo.Query().Any(c => c.Name.ToLower() == model.Name.ToLower().Trim())) // eğer bu ada sahip kategori varsa
                 return new ErrorResult("Category can't be added because category with the same name exists!");
-            var category = new Category()
+            var entity = new Category()
             {
                 Description = model.Description?.Trim(), // Description'ın null gelebilme ihtimali için sonunda ? kullanıyoruz
                 Name = model.Name.Trim() // Name modelde zorunlu olduğundan null gelebilme ihtimali yok
             };
-            _categoryRepo.Add(category);
+            _categoryRepo.Add(entity);
             return new SuccessResult(); // mesaj kullanmadan bir SuccessResult objesi oluşturduk ve döndük
         }
 
@@ -51,13 +51,13 @@ namespace Business.Services
         {
             if (_categoryRepo.Query().Any(c => c.Name.ToLower() == model.Name.ToLower().Trim() && c.Id != model.Id)) // eğer düzenlediğimiz kategori dışında (Id koşulu üzerinden) bu ada sahip kategori varsa
                 return new ErrorResult("Category can't be updated because category with the same name exists!");
-            var category = new Category()
+            var entity = new Category()
             {
                 Id = model.Id, // güncelleme işlemi için mutlaka Id set edilmeli
                 Description = model.Description?.Trim(), // Description'ın null gelebilme ihtimali için sonunda ? kullanıyoruz
                 Name = model.Name.Trim() // Name modelde zorunlu olduğundan null gelebilme ihtimali yok
             };
-            _categoryRepo.Update(category);
+            _categoryRepo.Update(entity);
             return new SuccessResult(); // mesaj kullanmadan bir SuccessResult objesi oluşturduk ve döndük
         }
 

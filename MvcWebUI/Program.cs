@@ -52,11 +52,13 @@ builder.Services.AddScoped<ProductRepoBase, ProductRepo>(); // projede herhangi 
                                                             // ProductRepo objesini new'leyerek o class'a enjekte eder.
 
 builder.Services.AddScoped<CategoryRepoBase, CategoryRepo>(); 
+builder.Services.AddScoped<StoreRepoBase, StoreRepo>(); 
 
 builder.Services.AddScoped<IProductService, ProductService>(); // projede herhangi bir class'ta IProductService tipinde constructor injection yapýldýðýnda
                                                                // ProductService objesini new'leyerek o class'a enjekte eder.
 
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IStoreService, StoreService>();
 #endregion
 
 var app = builder.Build();

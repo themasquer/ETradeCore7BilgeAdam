@@ -30,9 +30,25 @@ namespace MvcWebUI.Areas.Database.Controllers
 
             var categories = _db.Categories.ToList();
             _db.Categories.RemoveRange(categories);
+
+            var stores = _db.Stores.ToList();
+            _db.Stores.RemoveRange(stores);
             #endregion
 
+
+
             #region İlk verilerin oluşturulması
+            _db.Stores.Add(new Store()
+            {
+                Name = "Hepsiburada",
+                IsVirtual = true
+            });
+            _db.Stores.Add(new Store()
+            {
+                Name = "Vatan",
+                IsVirtual = false
+            });
+
             _db.Categories.Add(new Category() // daha sonra kategoriler DbSet'i üzerinden içerisindeki ürünlerle beraber kategorileri ekliyoruz
             {
                 Name = "Computer",

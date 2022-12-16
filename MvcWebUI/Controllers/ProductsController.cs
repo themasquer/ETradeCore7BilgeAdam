@@ -119,7 +119,8 @@ namespace MvcWebUI.Controllers
                 if (result.IsSuccessful) // eğer sonuç başarılıysa (servisten SuccessResult tipinde obje dönülmüş demektir)
                 {
                     TempData["Message"] = result.Message; // başarılı işlem sonucunun mesajını başka bir action'a yönlendirdiğimiz için ViewBag
-                                                          // veya ViewData ile taşıyamayacağımızdan TempData üzerinden taşıyoruz
+                                                          // veya ViewData ile taşıyamayacağımızdan TempData üzerinden taşıyoruz,
+                                                          // işlem sonuç mesajları servislerde atanmalıdır, controller'da atamak pek tercih edilmez
 
                     //return RedirectToAction("Index"); // son olarak bu controller'ın Index action'ına yönlendiriyoruz ki veriler o action'da
                                                         // veritabanından tekrar çekilip Index view'ında listelenebilsin
