@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DataAccess.Entities
 {
-    public class Store : RecordBase // Mağaza
+    public class Store : RecordBase, ISoftDelete // Mağaza
     {
         [Required]
         [StringLength(150)]
@@ -15,5 +15,11 @@ namespace DataAccess.Entities
 
         [DisplayName("Virtual")]
         public bool IsVirtual { get; set; }
+
+        public bool IsDeleted { get; set; }
+        // IsDeleted özelliği ISoftDelete interface'i ile implemente edilir, amacı kayıtlar veritabanında tablodan silinmesin, silindi olarak işaretlensin,
+        // böylece bu kayıtlar istenirse SQL Server Management Studio üzerinden sorgulanabilir
+
+        public List<ProductStore> ProductStores { get; set; } // many to many ilişki için ürün mağaza kolleksiyon referansı
     }
 }

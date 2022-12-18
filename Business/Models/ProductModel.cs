@@ -77,7 +77,7 @@ namespace Business.Models
         [Required(ErrorMessage = "{0} is required!")] // 0: varsa DisplayName'i (Category) yoksa özellik ismini (CategoryId) kullanır
 
         [DisplayName("Category")]  
-        public int? CategoryId { get; set; } // ürünün kategorisi view'da bir DropDownList üzerinden seçileceği ve Seçiniz item'ı üzerinden null gönderilebileceği
+        public int? CategoryId { get; set; } // ürünün kategorisi view'da bir drop down list üzerinden seçileceği ve Seçiniz item'ı üzerinden null gönderilebileceği
                                              // için CategoryId nullable yapılmalıdır ve eğer mutlaka seçim yapılması isteniyorsa Required attribute'u
                                              // (data annotation) ile işaretlenmelidir.
         #endregion
@@ -102,6 +102,17 @@ namespace Business.Models
 
         [DisplayName("Category")]
         public string CategoryNameDisplay { get; set; }
+
+
+
+        [DisplayName("Stores")]
+        public string StoreNamesDisplay { get; set; } // bir ürünün birden çok mağazası olabileceği için ilişkili mağaza adlarını bir ayraç üzerinden
+                                                      // tek bir string olarak birleştirip bu özelliğe ürün servisinde atıyoruz ve kullanıcıya gösteriyoruz
+
+        [DisplayName("Stores")]
+        public List<int> StoreIds { get; set; } // kullanıcıdan ürün ekleme ve güncelleme işlemlerinde mağaza verilerini alırken view'da list box kullanarak
+                                                // mağaza listesi üzerinden kullanıcının seçtiği mağazaların id'lerini bu özellikte saklıyoruz,
+                                                // eğer bir ürünün mutlaka bir veya daha çok mağazası olacaksa Required attribute'u kullanılmalıdır
         #endregion
 
 

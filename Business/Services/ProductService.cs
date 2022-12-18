@@ -27,12 +27,12 @@ namespace Business.Services
         public IQueryable<ProductModel> Query() // Read işlemi: repository üzerinden entity ile aldığımız verileri modele dönüştürerek veritabanı sorgumuzu oluşturuyoruz.
                                                 // Bu method sadece sorgu oluşturur ve döner, çalıştırmaz. Çalıştırmak için ToList, SingleOrDefault vb. methodlar kullanılmalıdır.
         {
-            // Repository üzerinden entity sorgusunu (Query) oluşturup, sorguya ürünün kategorisini de parametre üzerinden dahil ediyoruz ki
-            // (Entity Framework Eager Loading yani ihtiyaca göre ilişkili entity referanslarını sorguya dahil etme) aşağıda kategori adına ulaşabilelim.
+            // Repository üzerinden entity sorgusunu (Query) oluşturup, sorguya ürünün kategorisini ve ürün mağaza ilişkilerini de parametre üzerinden dahil ediyoruz ki
+            // (Entity Framework Eager Loading yani ihtiyaca göre ilişkili entity referanslarını sorguya dahil etme) aşağıda kategori adına ve mağaza adları ile id'lerine ulaşabilelim.
             // Eğer istenirse Entity Framework Lazy Loading projede aktif hale getirilerek hiç bir include (sorguya dahil etme) işlemi yapılmadan
             // tüm ilişkili entity referans verileri çekilebilir.
             // Daha sonra Select ile sorgu kolleksiyonundaki her bir entity için model dönüşümünü gerçekleştiriyoruz (projeksiyon işlemi).
-            var query = _productRepo.Query(product => product.Category).Select(product => new ProductModel()
+            var query = _productRepo.Query(product => product.Category, product => product.ProductStores).Select(product => new ProductModel()
             {
                 // Entity özelliklerinin modeldeki karşılıklarının atanması (mapping işlemi), istenirse mapping işlemleri için AutoMapper kütüphanesi kullanılabilir.
                 CategoryId = product.CategoryId,
@@ -53,7 +53,17 @@ namespace Business.Services
                 ExpirationDateDisplay = product.ExpirationDate.HasValue ? product.ExpirationDate.Value.ToString("yyyy/MM/dd") : "", // nullable özellikler için 2. yöntem
                 // Sıralama view'da kullanacağımız Javascript - CSS kütüphanesinde düzgün çalışsın diye yıl/ay/gün formatını kullandık.
 
-                CategoryNameDisplay = product.Category.Name // Ürünün ilişkili kategori referansı üzerinden adına ulaşıp özelliğe atadık.
+                CategoryNameDisplay = product.Category.Name, // Ürünün ilişkili kategori referansı üzerinden adına ulaşıp özelliğe atadık.
+
+                StoreNamesDisplay = string.Join("<br />", product.ProductStores.Select(productStore => productStore.Store.Name + (productStore.Store.IsDeleted ? " (Deleted)" : ""))), 
+                // ürünün mağaza adlarını string Join methodu ile <br /> (alt satır HTML tag'i) ayracı üzerinden tek bir string olarak birleştirir,
+                // Select methodundaki Lambda Expression ile ürünün her bir ilişkili ürün mağazası üzerinden ilişkili mağazasına ulaşıp adlarını string tipinde
+                // bir kolleksiyon olarak çektik, kolleksiyonda silinen mağazalar için mağaza adı sonuna parantez içerisinde Deleted (silindi) bilgisini yazdırdık
+
+                StoreIds = product.ProductStores.Select(productStore => productStore.StoreId).ToList()
+                // ürün ekleme ve güncelleme işlemlerinde doldurulan tüm mağaza listesinde kullanıcının daha önce kaydetmiş olduğu mağazaları id'leri üzerinden çekiyoruz,
+                // Select methodundaki Lambda Expression ile ürünün her bir ilişkili ürün mağazası üzerinden mağaza id'lerine ulaşıp int listesi tipinde
+                // bir kolleksiyon olarak çektik
             });
 
             //query = query.OrderBy(product => product.CategoryNameDisplay).ThenBy(product => product.Name); // Önce kategori adına göre artan daha sonra da ürün adına göre artan sıralar.
@@ -120,8 +130,15 @@ namespace Business.Services
                 // 1. yöntem:
                 //UnitPrice = model.UnitPrice ?? 0, // entity UnitPrice özelliğine eğer modelin UnitPrice'ı null gelirse 0, dolu gelirse gelen değeri ata
                 // 2. yöntem:
-                UnitPrice = model.UnitPrice.Value // UnitPrice ProductModel'de zorunlu olarak tanımlandığından direkt olarak Value ile değerine ulaşıp entity UnitPrice
-                                                  // özelliğine atayabiliriz.
+                UnitPrice = model.UnitPrice.Value, // UnitPrice ProductModel'de zorunlu olarak tanımlandığından direkt olarak Value ile değerine ulaşıp entity UnitPrice
+                                                   // özelliğine atayabiliriz.
+
+                ProductStores = model.StoreIds?.Select(sId => new ProductStore()
+                { 
+                    StoreId = sId
+                }).ToList() // ürün mağaza ilişkisi için kullanıcı tarafından model üzerinden liste olarak gönderilen her bir sId (store id) delegesi için
+                            // ürünle ilişkili bir ProductStore oluşturup StoreId özelliğini delege üzerinden set ediyoruz,
+                            // kullanıcının mağaza seçmemesi durumunda StoreIds null geleceği için sonuna ? ekledik
             };
 
             _productRepo.Add(entity); // repository üzerinden oluşturulan ürün entity'sinin save parametresini de göndermeyerek (default true göndererek)
@@ -134,9 +151,11 @@ namespace Business.Services
         public Result Update(ProductModel model) // Update işlemi: model kullanıcının view üzerinden doldurup gönderdiği objedir 
 		{
 			if (Query().Any(p => p.Name.ToUpper() == model.Name.ToUpper().Trim() && p.Id != model.Id)) 
-				return new ErrorResult("Product can't be updated because product with the same name exists!"); 
+				return new ErrorResult("Product can't be updated because product with the same name exists!");
                 // güncellenen ürün dışında (yukarıda Id üzerinden bu koşulu ekledik) bu ürün adına sahip kayıt bulunmaktadır mesajını içeren ErrorResult objesini
                 // dönüyoruz ki ilgili controller action'ında kullanabilelim.
+
+            _productRepo.DeleteProductStores(model.Id); // önce ürünün ilişkili ürün mağaza kayıtlarını repository üzerinden siliyoruz
 
 			Product entity = new Product() // bu satırda yukarıdaki koşullara uyan kayıt bulunmadığı için kullanıcının gönderdiği verileri içeren model objesi
 										   // üzerinden bir entity objesi oluşturuyoruz (mapping işlemi).
@@ -157,8 +176,15 @@ namespace Business.Services
 				StockAmount = model.StockAmount.Value, // StockAmount ProductModel'de zorunlu olarak tanımlandığından direkt olarak Value ile değerine ulaşıp entity StockAmount
 													   // özelliğine atayabiliriz.
 				
-				UnitPrice = model.UnitPrice.Value // UnitPrice ProductModel'de zorunlu olarak tanımlandığından direkt olarak Value ile değerine ulaşıp entity UnitPrice
-												  // özelliğine atayabiliriz.
+				UnitPrice = model.UnitPrice.Value, // UnitPrice ProductModel'de zorunlu olarak tanımlandığından direkt olarak Value ile değerine ulaşıp entity UnitPrice
+												   // özelliğine atayabiliriz.
+
+                ProductStores = model.StoreIds?.Select(sId => new ProductStore()
+                {
+                    StoreId = sId
+                }).ToList() // ürün mağaza ilişkisi için kullanıcı tarafından model üzerinden liste olarak gönderilen her bir sId (store id) delegesi için
+							// ürünle ilişkili bir ProductStore oluşturup StoreId özelliğini delege üzerinden set ediyoruz,
+							// kullanıcının mağaza seçmemesi durumunda StoreIds null geleceği için sonuna ? ekledik
 			};
 
 			_productRepo.Update(entity); // repository üzerinden oluşturulan ürün entity'sinin save parametresini de göndermeyerek (default true göndererek)
@@ -170,6 +196,8 @@ namespace Business.Services
 
 		public Result Delete(int id) // Delete işlemi: Genelde id üzerinden yapılır
         {
+            _productRepo.DeleteProductStores(id); // önce ürünün ilişkili ürün mağaza kayıtlarını repository üzerinden siliyoruz
+
             // 1. yöntem:
             //_productRepo.Delete(p => p.Id == id); // repository'de koşul (predicate) parametresi kullanan Delete methodunu Lambda Expression parametresi ile çağırabiliriz.
             // 2. yöntem:

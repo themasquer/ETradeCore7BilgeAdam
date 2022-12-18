@@ -48,8 +48,10 @@ namespace MvcWebUI.Areas.Database.Controllers
                 Name = "Vatan",
                 IsVirtual = false
             });
+            _db.SaveChanges(); // mağazaları veritabanına kaydediyoruz ki aşağıda oluşturacağımız ürünler için mağaza adı üzerinden istediğimiz mağaza kayıtlarına ulaşıp
+                               // ürün mağaza ilişki entity'si üzerinden tablosunda doldurabilelim
 
-            _db.Categories.Add(new Category() // daha sonra kategoriler DbSet'i üzerinden içerisindeki ürünlerle beraber kategorileri ekliyoruz
+            _db.Categories.Add(new Category()
             {
                 Name = "Computer",
                 Description = "Laptops, desktops and computer peripherals",
@@ -60,21 +62,50 @@ namespace MvcWebUI.Areas.Database.Controllers
                         Name = "Laptop",
                         UnitPrice = 3000.5,
                         ExpirationDate = new DateTime(2032, 1, 27),
-                        StockAmount = 10
+                        StockAmount = 10,
+                        ProductStores = new List<ProductStore>()
+                        {
+                            new ProductStore()
+                            {
+                                StoreId = _db.Stores.SingleOrDefault(s => s.Name == "Hepsiburada").Id
+                            }
+                        }
                     },
                     new Product()
                     {
                         Name = "Mouse",
                         UnitPrice = 20.5,
                         StockAmount = 50,
-                        Description = "Computer peripheral"
+                        Description = "Computer peripheral",
+                        ProductStores = new List<ProductStore>()
+                        {
+                            new ProductStore()
+                            {
+                                StoreId = _db.Stores.SingleOrDefault(s => s.Name == "Hepsiburada").Id
+                            },
+                            new ProductStore()
+                            {
+                                StoreId = _db.Stores.SingleOrDefault(s => s.Name == "Vatan").Id
+                            }
+                        }
                     },
                     new Product()
                     {
                         Name = "Keyboard",
                         UnitPrice = 40,
                         StockAmount = 45,
-                        Description = "Computer peripheral"
+                        Description = "Computer peripheral",
+                        ProductStores = new List<ProductStore>()
+                        {
+                            new ProductStore()
+                            {
+                                StoreId = _db.Stores.SingleOrDefault(s => s.Name == "Hepsiburada").Id
+                            },
+                            new ProductStore()
+                            {
+                                StoreId = _db.Stores.SingleOrDefault(s => s.Name == "Vatan").Id
+                            }
+                        }
                     },
                     new Product()
                     {
@@ -82,7 +113,14 @@ namespace MvcWebUI.Areas.Database.Controllers
                         UnitPrice = 2500,
                         ExpirationDate = DateTime.Parse("05/19/2027"),
                         StockAmount = 20,
-                        Description = "Computer peripheral"
+                        Description = "Computer peripheral",
+                        ProductStores = new List<ProductStore>()
+                        {
+                            new ProductStore()
+                            {
+                                StoreId = _db.Stores.SingleOrDefault(s => s.Name == "Vatan").Id
+                            }
+                        }
                     }
                 }
             });
@@ -103,13 +141,31 @@ namespace MvcWebUI.Areas.Database.Controllers
                         Name = "Receiver",
                         UnitPrice = 5000,
                         StockAmount = 30,
-                        Description = "Home theater system component"
+                        Description = "Home theater system component",
+                        ProductStores = new List<ProductStore>()
+                        {
+                            new ProductStore()
+                            {
+                                StoreId = _db.Stores.SingleOrDefault(s => s.Name == "Vatan").Id
+                            }
+                        }
                     },
                     new Product()
                     {
                         Name = "Equalizer",
                         UnitPrice = 1000,
-                        StockAmount = 40
+                        StockAmount = 40,
+                        ProductStores = new List<ProductStore>()
+                        {
+                            new ProductStore()
+                            {
+                                StoreId = _db.Stores.SingleOrDefault(s => s.Name == "Hepsiburada").Id
+                            },
+                            new ProductStore()
+                            {
+                                StoreId = _db.Stores.SingleOrDefault(s => s.Name == "Vatan").Id
+                            }
+                        }
                     }
                 }
             });

@@ -158,7 +158,7 @@
 
 				<div class="col-5">
 
-					<select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId">
+					<select asp-for="CategoryId" class="form-select" asp-items="ViewBag.CategoryId">
 						<option value="">-- Select --</option>
 					</select>
 					<!-- 
@@ -174,6 +174,28 @@
 
 				</div>
             </div>
+			<div class="row mb-3">
+
+				<label asp-for="StoreIds" class="col-2 col-form-label"></label>
+				<!--
+					Eğer varsa özelliğin DisplayName'ini (Stores) yoksa adını (StoreIds) yazdırır.
+				-->
+
+				<div class="col-5">
+
+					<select multiple asp-for="StoreIds" class="form-select" asp-items="ViewBag.StoreIds"></select>
+					<!--
+						StoreIds özelliği üzerinden controller'ın post action'ına kullanıcının seçtiği veri gönderilecektir.
+						asp-items ile action'da doldurduğumuz ve ViewBag ile view'a taşıdığımız mağaza listesi multiple attribute'lu select tag'inde oluşturulur.
+					-->
+
+					<span asp-validation-for="StoreIds" class="text-danger"></span>
+					<!--
+						StoreIds özelliği üzerinden data annotation'larla validasyon yapılıp eğer hata varsa burada gösterilecektir.
+					-->
+
+				</div>
+			</div>
 
             <input type="hidden" asp-for="Id" />
 			<!--

@@ -1,6 +1,7 @@
 ﻿using AppCore.DataAccess.EntityFramework.Bases;
 using DataAccess.Contexts;
 using DataAccess.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Repositories
 {
@@ -12,6 +13,13 @@ namespace DataAccess.Repositories
                                                                              // tipinde new'lenerek gönderilecek dbContext objesi constructor üzerinden enjekte edilerek
                                                                              // RepoBase'in parametreli constructor'ına gönderilir ki RepoBase'de kullanılabilsin.
         {
+        }
+
+        public void DeleteProductStores(int productId) // many to many ilişki için ürün id'ye göre ilişkili ürün mağaza kayıtlarını çekip
+                                                       // çektiğimiz bu ürünün ürün mağaza kayıtlarının tüm ürün mağaza kayıtlarından silinmesini sağlayan method
+        {
+            var productStores = DbContext.Set<ProductStore>().Where(ps => ps.ProductId == productId).ToList();
+            DbContext.Set<ProductStore>().RemoveRange(productStores);
         }
     }
 

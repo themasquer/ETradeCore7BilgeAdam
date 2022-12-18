@@ -25,5 +25,7 @@ namespace DataAccess.Entities
         public int CategoryId { get; set; } // zorunlu özellik, 1 to many ilişki (1 ürünün 1 kategorisi olmalı)
 
         public Category Category { get; set; } // ilişkili entity'e referans özelliği
+
+        public List<ProductStore> ProductStores { get; set; } // many to many ilişki için ürün mağaza kolleksiyon referansı
     }
 }

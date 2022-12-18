@@ -22,8 +22,12 @@ namespace Business.Services
 
         public Result Add(StoreModel model)
         {
-            if (Query().Any(s => s.Name.ToUpper() == model.Name.ToUpper().Trim()))
+            // bir mağaza adı üzerinden hem sanal hem de sanal olmayan mağaza oluşturulabilmesini sağlayabilmek
+            // ve bir mağazanın hem adı hem de sanal mı verisi üzerinden tek bir kaydının olabilmesi için
+            // aşağıda Store Name ve IsVirtual üzerinden validasyon yapıyoruz
+            if (Query().Any(s => s.Name.ToUpper() == model.Name.ToUpper().Trim() && s.IsVirtual == model.IsVirtual))
                 return new ErrorResult("Store can't be added because store with the same name exists!");
+
             var entity = new Store()
             {
                 IsVirtual = model.IsVirtual,
@@ -58,8 +62,12 @@ namespace Business.Services
 
         public Result Update(StoreModel model)
         {
-            if (Query().Any(s => s.Name.ToUpper() == model.Name.ToUpper().Trim() && s.Id != model.Id))
+            // bir mağaza adı üzerinden hem sanal hem de sanal olmayan mağaza oluşturulabilmesini sağlayabilmek
+            // ve bir mağazanın hem adı hem de sanal mı verisi üzerinden tek bir kaydının olabilmesi için
+            // aşağıda Store Name ve IsVirtual üzerinden validasyon yapıyoruz
+            if (Query().Any(s => s.Name.ToUpper() == model.Name.ToUpper().Trim() && s.IsVirtual == model.IsVirtual && s.Id != model.Id))
                 return new ErrorResult("Store can't be added because store with the same name exists!");
+
             var entity = new Store()
             {
                 Id = model.Id,

@@ -90,6 +90,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.CategoryNameDisplay)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StoreNamesDisplay)
+            </th>
             <th></th><!-- boş bir sütun oluşturduk ki aşağıda her bir ürün için Details, Edit ve Delete link'lerini içerisine koyabilelim -->
         </tr>
     </thead>
@@ -117,6 +120,9 @@
                 </td>
                 <td>
                     @Html.DisplayFor(model => product.CategoryNameDisplay)
+                </td>
+                <td>
+                    @Html.Raw(product.StoreNamesDisplay) @* eğer gösterilmek istenen verinin içerisinde HTML varsa ki burada <br /> var, Html.Raw Helper'ı kullanılmalıdır *@
                 </td>
                 <td>
                     @Html.ActionLink("Details", "Details", new { id = product.Id })

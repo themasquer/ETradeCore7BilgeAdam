@@ -11,11 +11,14 @@ namespace MvcWebUI.Controllers
         private readonly IProductService _productService; // controller'da ürünle ilgili işleri gerçekleştirebilmek için servis alanı tanımlanır ve constructor üzerinden enjekte edilir.
 
         private readonly ICategoryService _categoryService; // controller'da kategori ile ilgili işleri gerçekleştirebilmek için servis alanı tanımlanır ve constructor üzerinden enjekte edilir.
+        
+        private readonly IStoreService _storeService; // controller'da mağaza ile ilgili işleri gerçekleştirebilmek için servis alanı tanımlanır ve constructor üzerinden enjekte edilir.
 
-        public ProductsController(IProductService productService, ICategoryService categoryService)
+        public ProductsController(IProductService productService, ICategoryService categoryService, IStoreService storeService)
         {
             _productService = productService;
             _categoryService = categoryService;
+            _storeService = storeService;
         }
 
 
@@ -95,6 +98,13 @@ namespace MvcWebUI.Controllers
             // kategori listemizi, listenin tipi (CategoryModel) üzerinden arka planda tutacağımız (yani kullanıcının görmeyeceği) özellik ismini (Id) ve
             // listenin tipi (CategoryModel) üzerinden kullanıcıya göstereceğimiz özellik ismini (Name) belirtiyoruz.
 
+            ViewBag.Stores = new MultiSelectList(_storeService.Query().ToList(), "Id", "Name");
+            // Tıpkı yukarıda kategori listesini bir drop down list üzerinden kullanıcıya gösterebilmek için bir SelectList oluşturduğumuz ve ViewBag'e attığımız gibi
+            // mağazaları da ilgili servisi üzerinden çekip bir MultiSelectList'e doldurup ViewBag'e atıyoruz ki view'da kullanıcı List Box (multiple attribute'lu HTML select tag'i)
+            // üzerinden hiç, bir veya daha çok mağaza seçebilsin.
+            // Id parametresini StoreModel'e göre List Box'un arka planda kullanacağı değer, Name parametresini de yine StoreModel'e göre kullanıcıya göstereceği veri
+            // olarak MultiSelectList'e belirtiyoruz.
+
             #region IActionResult'ı implemente eden class'lar ve bu class tiplerini dönen methodlar
             //return new ViewResult(); // ViewResult ActionResult'tan miras aldığı için ve ActionResult da IActionResult'ı implemente ettiği için dönülebilir.
                                        // Ancak bu şekilde ViewResult objesini new'leyerek dönmek yerine aşağıdaki ViewResult dönen View methodu kullanılır.
@@ -108,7 +118,7 @@ namespace MvcWebUI.Controllers
 
         [HttpPost] // post methodu ile veri gönderen HTML form'unun veya isteklerin (request) verilerinin sunucu tarafından alınmasını sağlar. post işlemleri için yazmak zorunludur.
         [ValidateAntiForgeryToken] // View'da AntiforgeryToken HTML Helper'ı ile oluşturulan token'ın validasyonunu sağlayan attribute'tur. 
-        //public IActionResult Create(string Name, string Description, double UnitPrice, int StockAmount, DateTime? ExpirationDate, int? CategoryId)
+        //public IActionResult Create(string Name, string Description, double UnitPrice, int StockAmount, DateTime? ExpirationDate, int? CategoryId, List<int> StoreIds)
         public IActionResult Create(ProductModel product)
         // form verileri name ile belirtilen input HTML elemanları üzerinden parametre olarak alınabildiği gibi bu özellikler ProductModel'in içerisinde olduğundan
         // parametre olarak ProductModel tipinde bir product parametresi (model) de kullanılabilir. Genelde model kullanımı tercih edilir.
@@ -131,10 +141,14 @@ namespace MvcWebUI.Controllers
                 ModelState.AddModelError("", result.Message); // view'da validation summary kullandığımız için hata sonucunun mesajının bu şekilde validation summary'de
                                                               // gösterimini sağlayabiliriz
             }
-            ViewBag.Categories = new SelectList(_categoryService.Query().ToList(), "Id", "Name", product.CategoryId); 
+            ViewBag.Categories = new SelectList(_categoryService.Query().ToList(), "Id", "Name", product.CategoryId);
             // bu satırda model validasyondan geçememiş demektir
             // Create view'ını tekrar döneceğimiz için view'da select HTML tag'inde (drop down list) kullandığımız kategori listesini tekrar doldurmak zorundayız,
             // new SelectList'teki son parametre kategori listesinde kullanıcının product model üzerinden seçmiş olduğu kategorinin CategoryId üzerinden seçilmesini sağlar
+
+            ViewBag.Stores = new MultiSelectList(_storeService.Query().ToList(), "Id", "Name", product.StoreIds);
+            // view'da multiple attribute'lu select HTML tag'inde (list box) kullandığımız mağaza listesini tekrar doldurmak zorundayız,
+            // new MultiSelectList'teki son parametre mağaza listesinde kullanıcının product model üzerinden seçmiş olduğu mağazaların StoreIds üzerinden seçilmesini sağlar
 
             return View(product); // bu action'a parametre olarak gelen ve kullanıcının view üzerinden doldurduğu product modelini tekrar kullanıcıya gönderiyoruz ki
                                   // kullanıcı view'da girdiği verileri kaybetmesin ve hataları giderip tekrar işlem yapabilsin
@@ -156,6 +170,10 @@ namespace MvcWebUI.Controllers
             // view'da select HTML tag'inde (drop down list) kullandığımız kategori listesini SelectList objesine doldurarak ViewBag'e atıyoruz,
             // new SelectList'teki son parametre kategori listesinde kullanıcının product model üzerinden daha önce kaydetmiş olduğu kategorinin
             // CategoryId üzerinden seçilmesini sağlar
+
+            ViewBag.StoreIds = new MultiSelectList(_storeService.Query().ToList(), "Id", "Name", product.StoreIds);
+            // view'da multiple attribute'lu select HTML tag'inde (list box) kullandığımız mağaza listesini tekrar doldurmak zorundayız,
+            // new MultiSelectList'teki son parametre mağaza listesinde kullanıcının product model üzerinden seçmiş olduğu mağazaların StoreIds üzerinden seçilmesini sağlar
 
             return View(product); // Veritabanından çektiğimiz ürünü Edit.cshtml view'ına gönderiyoruz.
                                   // Edit.cshtml view'ını scaffolding (controller ve istenirse view'larının kodlarının şablonlara göre otomatik oluşturulması)
@@ -193,12 +211,16 @@ namespace MvcWebUI.Controllers
 				ModelState.AddModelError("", result.Message); // view'da validation summary kullandığımız için hata sonucunun mesajının bu şekilde validation summary'de
 															  // gösterimini sağlayabiliriz
 			}
-			ViewBag.CategoryId = new SelectList(_categoryService.Query().ToList(), "Id", "Name", product.CategoryId); 
+			ViewBag.CategoryId = new SelectList(_categoryService.Query().ToList(), "Id", "Name", product.CategoryId);
             // bu satırda model validasyondan geçememiş demektir
-			// Edit view'ını tekrar döneceğimiz için view'da select HTML tag'inde (drop down list) kullandığımız kategori listesini tekrar doldurmak zorundayız,
-			// new SelectList'teki son parametre kategori listesinde kullanıcının product model üzerinden seçmiş olduğu kategorinin CategoryId üzerinden seçilmesini sağlar
+            // Edit view'ını tekrar döneceğimiz için view'da select HTML tag'inde (drop down list) kullandığımız kategori listesini tekrar doldurmak zorundayız,
+            // new SelectList'teki son parametre kategori listesinde kullanıcının product model üzerinden seçmiş olduğu kategorinin CategoryId üzerinden seçilmesini sağlar
 
-			return View(product); // bu action'a parametre olarak gelen ve kullanıcının view üzerinden doldurduğu product modelini tekrar kullanıcıya gönderiyoruz ki
+            ViewBag.StoreIds = new MultiSelectList(_storeService.Query().ToList(), "Id", "Name", product.StoreIds);
+            // view'da multiple attribute'lu select HTML tag'inde (list box) kullandığımız mağaza listesini tekrar doldurmak zorundayız,
+            // new MultiSelectList'teki son parametre mağaza listesinde kullanıcının product model üzerinden seçmiş olduğu mağazaların StoreIds üzerinden seçilmesini sağlar
+
+            return View(product); // bu action'a parametre olarak gelen ve kullanıcının view üzerinden doldurduğu product modelini tekrar kullanıcıya gönderiyoruz ki
 								  // kullanıcı view'da girdiği verileri kaybetmesin ve hataları giderip tekrar işlem yapabilsin
 		}
 

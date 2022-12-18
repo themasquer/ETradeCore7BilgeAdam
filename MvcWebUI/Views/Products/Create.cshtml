@@ -66,7 +66,17 @@
                 <option value="1">Computer</option>
                 <option value="2">Home Theater System</option>
             </select>
-            <!-- name="CategoryId" HTML attribute'u önemlidir çünkü controller action'ında int? CategoryId parametresi ile option value üzerinden bu veri alınır. -->
+            <!-- name="CategoryId" HTML attribute'u önemlidir çünkü controller action'ında int? CategoryId parametresi ile seçilen option value üzerinden bu veri alınır. -->
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label for="stores" class="col-2 col-form-label">Stores</label>
+        <div class="col-5">
+            <select multiple id="stores" name="StoreIds" class="form-select">
+                <option value="1">Hepsiburada</option>
+                <option value="2">Vatan</option>
+            </select>
+            <!-- name="StoreIds" HTML attribute'u önemlidir çünkü controller action'ında List<int> StoreIds parametresi ile seçilen option value'lar üzerinden bu veri alınır. -->
         </div>
     </div>
     <div class="row mb-3">
@@ -173,6 +183,19 @@
             *@
 
             @Html.ValidationMessageFor(model => model.CategoryId, null, new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="row mb-3">
+        @Html.LabelFor(model => model.StoreIds, new { @class = "col-2 col-form-label"})
+        <div class="col-5">
+            @Html.ListBoxFor(model => model.StoreIds, ViewBag.Stores as MultiSelectList, new { @class = "form-select" })
+            @*
+                ProductModel'deki StoreIds özelliği için bir multiple attribute'lu select oluşturur.
+                İkinci parametre üzerinden action'da atanan ViewBag.Stores (ViewData["Stores"] de kullanılabilir) objesini new'lenen MultiSelectList tipine dönüştür.
+                Üçüncü parametre üzerinden de Bootstrap form-select class'ını oluşturulacak multiple attribute'lu select HTML tag'inin class'ı olarak kullan.
+            *@
+
+            @Html.ValidationMessageFor(model => model.StoreIds, null, new { @class = "text-danger" })
         </div>
     </div>
     <div class="row mb-3">

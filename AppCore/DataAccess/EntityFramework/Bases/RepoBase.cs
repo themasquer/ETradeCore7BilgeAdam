@@ -29,8 +29,9 @@ namespace AppCore.DataAccess.EntityFramework.Bases
     // new'lenebilen ve RecordBase'den miras alan tip olarak TEntity üzerinden herhangi bir tip (entity ve model) kullanacak, aynı zamanda IDisposable interface'ini implemente edecek class.
     public abstract class RepoBase<TEntity> : IDisposable where TEntity : RecordBase, new()
     {
-        public DbContext DbContext { get; } // DbContext EntityFramework'ün CRUD işlemleri yapmamızı sağlayan temel class'ı,
-                                            // get; ile readonly yani sadece constructor üzerinden veya bu satırda set edilebilir.
+        protected DbContext DbContext { get; } // DbContext EntityFramework'ün CRUD işlemleri yapmamızı sağlayan temel class'ı,
+                                               // get; ile readonly yani sadece constructor üzerinden veya bu satırda set edilebilir.
+                                               // protected erişim bildirgeci ile DbContext'in ihtiyaç halinde sadece repository'lerde kullanılması sağlanır.
 
         protected RepoBase(DbContext dbContext) // dbContext Dependency Injection (Constructor Injection) ile RepoBase'e dışarıdan new'lenerek enjekte edilecek.
         {
@@ -60,6 +61,32 @@ namespace AppCore.DataAccess.EntityFramework.Bases
         {
             var query = Query(entitiesToInclude); // önce yukarıdaki Query methodu üzerinden parametre olarak gönderilen entity referanslarını sorguya dahil ediyoruz.
             return query.Where(predicate); // daha sonra sorguyu where ile gelen koşul veya koşullar üzerinden filtreleyip dönüyoruz.
+        }
+
+        // Eğer istenirse predicate ile belirtilen koşul veya koşullara sahip herhangi bir kayıt var mı kontrolü bu method üzerinden yapılabilir.
+        // Koşul veya koşullarda belki ilişkili entity referansları kullanılabilir diye sorguya bu entity'leri dahil ediyoruz. 
+        public virtual bool Exists(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] entitiesToInclude)
+        {
+            return Query(entitiesToInclude).Any(predicate);
+        }
+
+        // Eğer istenirse hiç bir koşul olmadan entity tablosunda bir kayıt var mı kontrolü için bu method kullanılabilir. 
+        public virtual bool Exists()
+        {
+            return Query().Any();
+        }
+
+        // Eğer istenirse predicate ile belirtilen koşul veya koşullara sahip kayıt sayısı bu method üzerinden alınabilir.
+        // Koşul veya koşullarda belki ilişkili entity referansları kullanılabilir diye sorguya bu entity'leri dahil ediyoruz. 
+        public virtual int Count(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] entitiesToInclude)
+        {
+            return Query(predicate, entitiesToInclude).Count();
+        }
+
+        // Eğer istenirse hiç bir koşul olmadan entity tablosundaki kayıt sayısı bu method üzerinden alınabilir.
+        public virtual int Count()
+        {
+            return Query().Count();
         }
 
         // Create işlemi: gönderilen entity'yi DbSet'e ekler ve eğer save parametresi true ise değişikliği Save methodu üzerinden veritabanına yansıtır.
