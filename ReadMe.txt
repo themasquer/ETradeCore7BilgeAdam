@@ -23,17 +23,18 @@ ve NuGet üzerinden Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation kütüphanesi
 
 6) MvcWebUI katmanýna Microsoft.EntityFrameworkCore.Design paketi NuGet'ten indirilerek MvcWebUI projesi Startup Project yapýlýr. 
 Tools -> NuGet Package Manager -> Package Manager Console açýlýr, Default project DataAccess seçilir 
-ve önce add-migration v1 daha sonra update-database komutlarý çalýþtýrýlýr.
+ve önce örneðin add-migration v1 daha sonra update-database komutlarý çalýþtýrýlýr.
+Entity'ler veya DbSet'ler üzerinde yapýlan her deðiþiklik için örneðin add-migration v2 daha sonra da update-database çalýþtýrýlmalýdýr.
 
 7) DataAccess katmanýnda entity'ler üzerinden AppCore'daki RepoBase'den miras alan abstract (soyut) base repository'ler ile
-bu base repository'lerden miras alan concrete (somut) repository'ler oluþturulur ve MvcWebUI katmanýnda Program.cs'teki IoC Container'da baðýmlýlklarý yönetilir.
+bu base repository'lerden miras alan concrete (somut) repository'ler oluþturulur ve MvcWebUI katmanýnda Program.cs'teki IoC Container'da baðýmlýlýklarý yönetilir.
 
 8) Business katmanýnda entity'ler üzerinden model class'larý AppCore katmanýndaki RecordBase'den miras alacak þekilde oluþturulur,
 eðer istenirse MvcWebUI katmanýnda view'larda kullanýlmak üzere formatlama, iliþkili referans özellikleri kullanma, vb. için yeni özellikler eklenebilir.
 
 9) Business katmanýnda model'ler üzerinden entity <-> model dönüþümlerini gerçekleþtirip DataAccess katmanýndaki repository'ler üzerinden
 veritabaný iþlemleri gerçekleþtirmek için AppCore'daki IService'i implemente eden interface'ler ile bu interface'leri implemente
-eden concrete (somut) service'ler oluþturulur ve MvcWebUI katmanýnda Program.cs'teki IoC Container'da baðýmlýlklarý yönetilir.
+eden concrete (somut) service'ler oluþturulur ve MvcWebUI katmanýnda Program.cs'teki IoC Container'da baðýmlýlýklarý yönetilir.
 
 10) MvcWebUI katmanýnda yönetilecek model için controller ile ilgili action ve view'larý oluþturularak ilgili service constructor üzerinden enjekte edilir
 ve controller action'larýnda methodlarý kullanýlarak model objeleri üzerinden iþlemler (örneðin CRUD) gerçekleþtirilir.
@@ -84,3 +85,19 @@ Konu Anlatýmlý Proje Geliþtirme Aþamalarý:
 32) Business -> Services -> StoreService -> Update
 33) Business -> Services -> StoreService -> Delete
 34) MvcWebUI -> Controllers -> Stores -> MVC Controller Entity Framework Scaffolding
+
+Kullanýcý Yönetimi: Ýstenirse kullanýcý yönetimi için Microsoft'un Identity Framework kütüphanesi kullanýlabilir.
+35) DataAccess -> Entities -> User ve Role entity'leri
+36) DataAccess -> Contexts -> ETradeContext -> Users ve Roles DbSet'leri
+37) DataAccess -> Repositories -> UserRepo (MvcWebUI -> Program.cs -> IoC Container)
+38) DataAccess -> Repositories -> RoleRepo (MvcWebUI -> Program.cs -> IoC Container)
+39) DataAccess -> Enums -> Roles
+40) Business -> Models -> UserModel
+41) Business -> Models -> AccountLoginModel
+42) Business -> Services -> UserService -> Query (MvcWebUI -> Program.cs -> IoC Container)
+43) Business -> Services -> AccountService -> Login (MvcWebUI -> Program.cs -> IoC Container)
+44) Business -> Models -> AccountRegisterModel
+45) Business -> Services -> UserService -> Add
+46) Business -> Services -> AccountService -> Register
+47) MvcWebUI -> Areas -> Accounts -> Controllers -> Home -> Login Action'larý ve View'ý
+48) MvcWebUI -> Areas -> Accounts -> Controllers -> Home -> Register Action'larý ve View'ý

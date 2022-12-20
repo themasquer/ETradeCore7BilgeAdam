@@ -1,6 +1,7 @@
 ﻿using DataAccess.Contexts;
 using DataAccess.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Text;
 
 namespace MvcWebUI.Areas.Database.Controllers
@@ -25,14 +26,30 @@ namespace MvcWebUI.Areas.Database.Controllers
                                      // (örneğin Views -> Shared klasörü altındaki _Layout.cshtml) bu adres için area da dikkate alınarak link oluşturularak çağrılabilir.
         {
             #region Mevcut verilerin silinmesi
-            var products = _db.Products.ToList(); // önce ürün listesini çekip daha sonra ürünler DbSet'i üzerinden RemoveRange methodu ile silinmesini sağlıyoruz
+
+            var productStores = _db.ProductStores.ToList(); // önce ürün mağaza listesini çekip daha sonra ürün mağaza DbSet'i üzerinden RemoveRange methodu ile silinmesini sağlıyoruz
+            _db.ProductStores.RemoveRange(productStores);
+
+            var stores = _db.Stores.ToList();
+            _db.Stores.RemoveRange(stores);
+
+            var products = _db.Products.ToList(); 
             _db.Products.RemoveRange(products);
 
             var categories = _db.Categories.ToList();
             _db.Categories.RemoveRange(categories);
 
-            var stores = _db.Stores.ToList();
-            _db.Stores.RemoveRange(stores);
+            var users = _db.Users.ToList();
+            _db.Users.RemoveRange(users);
+
+            var roles = _db.Roles.ToList();
+            _db.Roles.RemoveRange(roles);
+
+            if (roles.Count > 0) // eğer veritabanında rol kaydı varsa eklenecek rollerin rol id'lerini aşağıdaki SQL komutu üzerinden 1'den başlayacak hale getiriyoruz
+                                 // eğer kayıt yoksa o zaman zaten rol tablosuna daha önce veri eklenmemiştir dolayısıyla rol id'leri 1'den başlayacaktır
+            {
+                _db.Database.ExecuteSqlRaw("dbcc CHECKIDENT ('Roles', RESEED, 0)"); // ExecuteSqlRaw methodu üzerinden istenilen SQL sorgusu elle yazılıp veritabanında çalıştırılabilir
+            }
             #endregion
 
 
@@ -49,7 +66,7 @@ namespace MvcWebUI.Areas.Database.Controllers
                 IsVirtual = false
             });
             _db.SaveChanges(); // mağazaları veritabanına kaydediyoruz ki aşağıda oluşturacağımız ürünler için mağaza adı üzerinden istediğimiz mağaza kayıtlarına ulaşıp
-                               // ürün mağaza ilişki entity'si üzerinden tablosunda doldurabilelim
+                               // mağaza id'lerini ürün mağaza ilişki entity'si üzerinden tablosunda doldurabilelim
 
             _db.Categories.Add(new Category()
             {
@@ -169,11 +186,42 @@ namespace MvcWebUI.Areas.Database.Controllers
                     }
                 }
             });
+
+            _db.Roles.Add(new Role()
+            {
+                Name = "Admin",
+                Users = new List<User>()
+                {
+                    new User()
+                    {
+                        IsActive = true,
+                        Password = "cagil",
+                        UserName = "cagil"
+                    }
+                }
+            });
+            _db.Roles.Add(new Role()
+            {
+                Name = "User",
+                Users = new List<User>()
+                {
+                    new User()
+                    {
+                        IsActive = true,
+                        Password = "leo",
+                        UserName = "leo"
+                    }
+                }
+            });
             #endregion
 
-            #region DbSet'ler üzerinden yapılan değişikliklerin tek seferde veritabanına yansıtılması
+
+
+            #region DbSet'ler üzerinden yapılan değişikliklerin tek seferde veritabanına yansıtılması (Unit of Work)
             _db.SaveChanges();
             #endregion
+
+
 
             //return Content("Database seed successful."); // *1
             //return Content("<label style=\"color:red;\"><b>Database seed successful.</b></label>", "text/html"); // *2

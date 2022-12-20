@@ -70,25 +70,6 @@ namespace AppCore.DataAccess.EntityFramework.Bases
             return Query(entitiesToInclude).Any(predicate);
         }
 
-        // Eğer istenirse hiç bir koşul olmadan entity tablosunda bir kayıt var mı kontrolü için bu method kullanılabilir. 
-        public virtual bool Exists()
-        {
-            return Query().Any();
-        }
-
-        // Eğer istenirse predicate ile belirtilen koşul veya koşullara sahip kayıt sayısı bu method üzerinden alınabilir.
-        // Koşul veya koşullarda belki ilişkili entity referansları kullanılabilir diye sorguya bu entity'leri dahil ediyoruz. 
-        public virtual int Count(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] entitiesToInclude)
-        {
-            return Query(predicate, entitiesToInclude).Count();
-        }
-
-        // Eğer istenirse hiç bir koşul olmadan entity tablosundaki kayıt sayısı bu method üzerinden alınabilir.
-        public virtual int Count()
-        {
-            return Query().Count();
-        }
-
         // Create işlemi: gönderilen entity'yi DbSet'e ekler ve eğer save parametresi true ise değişikliği Save methodu üzerinden veritabanına yansıtır.
         public virtual void Add(TEntity entity, bool save = true)
         {
@@ -144,7 +125,19 @@ namespace AppCore.DataAccess.EntityFramework.Bases
                 Save();
         }
 
-        // Oluşturulan sorguların (query) veritabanında çalıştırılması: SaveChanges methodu ile sorgunun çalıştırılması sonucunda etkilenen kayıt sayısı dönülebilir.
+        // Delete işlemi: TEntity tipindeki entity'nin başka entity tipindeki bir referans üzerinden ilişkilerini tutan TRelationalEntity tipi ile bir veya daha fazla koşul için
+        // ilişkili kayıtlarının silinmesini sağlar, bu method çağrıldıktan sonra genelde TEntity tipindeki kayıt güncellendiği veya silindiği için
+        // save parametresi default false olarak atanmıştır, class dışında generic tipler bu methodda olduğu gibi kullanılabilir.
+        public virtual void Delete<TRelationalEntity>(Expression<Func<TRelationalEntity, bool>> predicate, bool save = false) where TRelationalEntity : class, new()
+        {
+            var relationalEntities = DbContext.Set<TRelationalEntity>().Where(predicate);
+            DbContext.Set<TRelationalEntity>().RemoveRange(relationalEntities);
+            if (save)
+                Save();
+		}
+
+        // DbSet'lerdeki tüm değişikliklerden sonra oluşturulacak sorguların (insert, update ve delete) tek seferde veritabanında çalıştırılması: Unit of Work
+        // SaveChanges methodu ile sorgunun çalıştırılması sonucunda etkilenen kayıt sayısı dönülebilir.
         public virtual int Save()
         {
             try

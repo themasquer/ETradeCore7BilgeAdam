@@ -155,7 +155,7 @@ namespace Business.Services
                 // güncellenen ürün dışında (yukarıda Id üzerinden bu koşulu ekledik) bu ürün adına sahip kayıt bulunmaktadır mesajını içeren ErrorResult objesini
                 // dönüyoruz ki ilgili controller action'ında kullanabilelim.
 
-            _productRepo.DeleteProductStores(model.Id); // önce ürünün ilişkili ürün mağaza kayıtlarını repository üzerinden siliyoruz
+            _productRepo.Delete<ProductStore>(ps => ps.ProductId == model.Id); // önce ürünün ilişkili ürün mağaza kayıtlarını repository üzerinden siliyoruz
 
 			Product entity = new Product() // bu satırda yukarıdaki koşullara uyan kayıt bulunmadığı için kullanıcının gönderdiği verileri içeren model objesi
 										   // üzerinden bir entity objesi oluşturuyoruz (mapping işlemi).
@@ -196,7 +196,7 @@ namespace Business.Services
 
 		public Result Delete(int id) // Delete işlemi: Genelde id üzerinden yapılır
         {
-            _productRepo.DeleteProductStores(id); // önce ürünün ilişkili ürün mağaza kayıtlarını repository üzerinden siliyoruz
+            _productRepo.Delete<ProductStore>(ps => ps.ProductId == id); // önce ürünün ilişkili ürün mağaza kayıtlarını repository üzerinden siliyoruz
 
             // 1. yöntem:
             //_productRepo.Delete(p => p.Id == id); // repository'de koşul (predicate) parametresi kullanan Delete methodunu Lambda Expression parametresi ile çağırabiliriz.

@@ -22,7 +22,7 @@ namespace DataAccess.Entities
 
         public DateTime? ExpirationDate { get; set; } // zorunlu olmayan özellik
 
-        public int CategoryId { get; set; } // zorunlu özellik, 1 to many ilişki (1 ürünün 1 kategorisi olmalı)
+        public int CategoryId { get; set; } // zorunlu özellik, 1 to many ilişki (1 ürünün mutlaka 1 kategorisi olmalı, eğer kategorisi olması zorunlu olmasaydı int? tipini kullanacaktık)
 
         public Category Category { get; set; } // ilişkili entity'e referans özelliği
 

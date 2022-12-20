@@ -13,6 +13,10 @@ namespace DataAccess.Contexts
         public DbSet<Category> Categories { get; set; }
         public DbSet<Store> Stores { get; set; }
         public DbSet<ProductStore> ProductStores { get; set; } // ürün ile mağaza arasındaki many to many ilişki tablosuna karşılık DbSet
+        public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
+
+
 
         public ETradeContext(DbContextOptions options) : base(options) // options parametresi MvcWebUI katmanındaki Program.cs IoC Container'ında AddDbContext methodu ile
                                                                        // bağımlılığı yönetilen ve appsettings.json veya appsettings.Development.json dosyalarında
@@ -21,6 +25,8 @@ namespace DataAccess.Contexts
         {
 
         }
+
+
 
         // eğer istenirse connection string DbContext'in OnConfiguring methodu ezilerek de tanımlanıp kullanılabilir, genelde bu kullanım tercih edilmez.
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -33,6 +39,8 @@ namespace DataAccess.Contexts
 
         //    optionsBuilder.UseSqlServer(connectionString);
         //}
+
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) // DbContext'teki bu method ezilerek veritabanı tabloları yapısıyla ilgili değişiklikler yapılabilir,
                                                                            // bu yapısal değişiklikler istenirse entity'lerde istenirse de bu method üzerinden gerçekleştirilebilir,

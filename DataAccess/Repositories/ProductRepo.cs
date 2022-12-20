@@ -14,13 +14,6 @@ namespace DataAccess.Repositories
                                                                              // RepoBase'in parametreli constructor'ına gönderilir ki RepoBase'de kullanılabilsin.
         {
         }
-
-        public void DeleteProductStores(int productId) // many to many ilişki için ürün id'ye göre ilişkili ürün mağaza kayıtlarını çekip
-                                                       // çektiğimiz bu ürünün ürün mağaza kayıtlarının tüm ürün mağaza kayıtlarından silinmesini sağlayan method
-        {
-            var productStores = DbContext.Set<ProductStore>().Where(ps => ps.ProductId == productId).ToList();
-            DbContext.Set<ProductStore>().RemoveRange(productStores);
-        }
     }
 
     public class ProductRepo : ProductRepoBase // ProductRepo ProductRepoBase'den miras alan ve MVC projesindeki Program.cs IoC Container'ında
