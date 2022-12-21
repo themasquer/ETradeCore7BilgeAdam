@@ -30,7 +30,8 @@ namespace Business.Models
 
 
 		#region View'larda Gösterim için Kullanacağımız Özellikler
-
+		[DisplayName("Role")]
+		public string RoleNameDisplay { get; set; }
 		#endregion
 	}
 }

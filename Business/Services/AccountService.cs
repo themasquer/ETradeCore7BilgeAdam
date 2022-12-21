@@ -8,13 +8,13 @@ namespace Business.Services
 	public interface IAccountService // IAccountService'i IService'ten implemente etmiyoruz çünkü bu servis UserService enjeksiyonu üzerinden login ve register işlerini yapacak,
 									 // CRUD işlemlerinin hepsini yapmayacak, bu yüzden Login ve Register methodlarını içerisinde tanımlıyoruz
 	{
-		Result Login(AccountLoginModel accountLoginModel, UserModel userModel); // kullanıcıların kullanıcı girişi için
-        // accountLoginModel view üzerinden kullanıcıdan aldığımız verilerdir,
-        // userModel ise accountLoginModel'deki doğru verilere göre kullanıcıyı veritabanından çektikten sonra method içerisinde atayacağımız ve
-        // referans tip olduğu için de Login methodunu çağırdığımız yerde kullanabileceğimiz sonuç kullanıcı objesidir,
-        // böylelikle Login methodundan hem login işlem sonucunu Result olarak hem de işlem başarılıysa kullanıcı objesini UserModel objesi olarak dönebiliyoruz
+		Result Login(AccountLoginModel accountLoginModel, UserModel userResultModel); // kullanıcıların kullanıcı girişi için
+		// accountLoginModel view üzerinden kullanıcıdan aldığımız verilerdir,
+		// userResultModel ise accountLoginModel'deki doğru verilere göre kullanıcıyı veritabanından çektikten sonra method içerisinde atayacağımız ve
+		// referans tip olduğu için de Login methodunu çağırdığımız yerde kullanabileceğimiz sonuç kullanıcı objesidir,
+		// böylelikle Login methodundan hem login işlem sonucunu Result olarak hem de işlem başarılıysa kullanıcı objesini UserModel objesi olarak dönebiliyoruz
 
-        Result Register(AccountRegisterModel accountRegisterModel); // kullanıcıların yeni kullanıcı kaydı için
+		Result Register(AccountRegisterModel accountRegisterModel); // kullanıcıların yeni kullanıcı kaydı için
 	}
 
 	public class AccountService : IAccountService
@@ -27,17 +27,20 @@ namespace Business.Services
 			_userService = userService;
 		}
 
-		public Result Login(AccountLoginModel accountLoginModel, UserModel userModel) // kullanıcı girişi
+		public Result Login(AccountLoginModel accountLoginModel, UserModel userResultModel) // kullanıcı girişi
 		{
-			// önce accountLoginModel üzerinden kullanıcının girmiş olduğu kullanıcı adı ve şifreye sahip aktif kullanıcı sorgusu üzerinden veriyi çekip userModel'a atıyoruz,
+			// önce accountLoginModel üzerinden kullanıcının girmiş olduğu kullanıcı adı ve şifreye sahip aktif kullanıcı sorgusu üzerinden veriyi çekip user'a atıyoruz,
 			// kullanıcı adı ve şifre hassas veri olduğu için trim'lemiyoruz ve büyük küçük harf duyarlılığını da ortadan kaldırmıyoruz
-			userModel = _userService.Query().SingleOrDefault(u => u.UserName == accountLoginModel.UserName && u.Password == accountLoginModel.Password && u.IsActive);
+			var user = _userService.Query().SingleOrDefault(u => u.UserName == accountLoginModel.UserName && u.Password == accountLoginModel.Password && u.IsActive);
 
-			if (userModel is null) // eğer böyle bir kullanıcı bulunamadıysa
+			if (user is null) // eğer böyle bir kullanıcı bulunamadıysa
 				return new ErrorResult("Invalid user name or password!"); // kullanıcı adı veya şifre hatalı sonucunu dönüyoruz
-			
-			// burada kullanıcı bulunmuş demektir dolayısıyla referans tip olduğu için hem userModel'i sorgulanan kullanıcı objesi
-			// hem de işlem sonucunu SuccessResult objesi olarak methoddan dönüyoruz
+
+			// burada kullanıcı bulunmuş demektir dolayısıyla referans tip olduğu için userResultModel'i yukarıda çektiğimiz user'a göre dolduruyoruz,
+			// dolayısıyla hem sorgulanan kullanıcı objesi (userResultModel) hem de işlem sonucunu SuccessResult objesi olarak methoddan dönüyoruz,
+			// Account area -> Users controller -> Login action'ında sadece kullanıcı adı ve role ihtiyacımız olduğu için objemizi bu özellikler üzerinden dolduruyoruz
+			userResultModel.UserName = user.UserName;
+			userResultModel.RoleNameDisplay = user.RoleNameDisplay;
 			return new SuccessResult(); 
 		}
 
@@ -56,8 +59,14 @@ namespace Business.Services
 										  // sürekli bakılmasından kurtulmamızı sağlar
             };
 
-			return _userService.Add(user); // UserService'teki Add methodu bize sonuç döndüğünden ve bu sonucu dönerek Register methodunu çağırdığımız yerde kullanabileceğimizden
-										   // UserService'teki Add methodundan dönen sonucu Register methodu sonucu olarak dönebiliriz	
+			// 1. yöntem:
+			//return _userService.Add(user); // UserService'teki Add methodu bize sonuç döndüğünden ve bu sonucu dönerek Register methodunu çağırdığımız yerde kullanabileceğimizden
+											 // UserService'teki Add methodundan dönen sonucu Register methodu sonucu olarak dönebiliriz
+			// 2. yöntem:
+			var result = _userService.Add(user); // UserService Add methodunun sonucunu bir result objesine atıyoruz
+			if (!result.IsSuccessful) // eğer işlem başarılı değilse
+				result.Message = "User can't be registered becuase user with the same name exists!"; // dönen ErrorResult objesinin mesajını burada değiştiriyoruz
+			return result; // SuccessResult için bir değişiklik yapmadık, ya SuccessResult objesini ya da mesajını değiştirdiğimiz ErrorResult objesini dönüyoruz
 		}
 	}
 }

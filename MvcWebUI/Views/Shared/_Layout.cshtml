@@ -58,6 +58,21 @@
                             <!-- Tıklandığında Stores controller'ının Index action'ına yönlendirecek Mağazalar link'i. -->
                         </li>
                     </ul>
+
+                    <!-- aşağıdaki div ve ul class'ları üzerinden bu kısım menüde en sağ tarafta gelecektir -->
+                    <div class="navbar-text">
+                        <ul class="navbar-nav me-auto">
+                            <li class="nav-item"><!-- Menü elemanı. -->
+                                <a class="nav-link text-white" asp-area="Account" asp-controller="Users" asp-action="Register">Register</a>
+                                <!-- Tıklandığında Account area'sındaki Users controller'ının Register action'ına yönlendirecek Kayıt link'i. -->
+                            </li>
+                            <li class="nav-item"><!-- Menü elemanı. -->
+                                <a class="nav-link text-white" asp-area="Account" asp-controller="Users" asp-action="Login">Login</a>
+                                <!-- Tıklandığında Account area'sındaki Users controller'ının Login action'ına yönlendirecek Giriş link'i. -->
+                            </li>
+                        </ul>
+                    </div>
+
                 </div>
             </div>
         </nav>

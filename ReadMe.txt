@@ -99,5 +99,5 @@ Kullanýcý Yönetimi: Ýstenirse kullanýcý yönetimi için Microsoft'un Identity Fram
 44) Business -> Models -> AccountRegisterModel
 45) Business -> Services -> UserService -> Add
 46) Business -> Services -> AccountService -> Register
-47) MvcWebUI -> Areas -> Accounts -> Controllers -> Home -> Login Action'larý ve View'ý
-48) MvcWebUI -> Areas -> Accounts -> Controllers -> Home -> Register Action'larý ve View'ý
+47) MvcWebUI -> Areas -> Accounts -> Controllers -> Home -> Register Action'larý ve View'ý
+48) MvcWebUI -> Areas -> Accounts -> Controllers -> Home -> Login Action'larý ve View'ý (MvcWebUI -> Program.cs -> Authentication)

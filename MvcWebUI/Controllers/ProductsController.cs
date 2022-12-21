@@ -107,10 +107,18 @@ namespace MvcWebUI.Controllers
 
             #region IActionResult'ı implemente eden class'lar ve bu class tiplerini dönen methodlar
             //return new ViewResult(); // ViewResult ActionResult'tan miras aldığı için ve ActionResult da IActionResult'ı implemente ettiği için dönülebilir.
-                                       // Ancak bu şekilde ViewResult objesini new'leyerek dönmek yerine aşağıdaki ViewResult dönen View methodu kullanılır.
-                                       // Detaylı bilgi için aşağıdaki aynı isme sahip region'a bakılabilir.
+            // Ancak bu şekilde ViewResult objesini new'leyerek dönmek yerine aşağıdaki ViewResult dönen View methodu kullanılır.
+            // Detaylı bilgi için aşağıdaki aynı isme sahip region'a bakılabilir.
 
-            return View(); // Views altındaki Products klasöründeki Create.cshtml view'ını döner.
+            //return View(); // Views altındaki Products klasöründeki Create.cshtml view'ını döner.
+
+            // Eğer istenirse view'de bazı ilk input'ların set edilmesi için yeni bir model oluşturularak view'a gönderilebilir.
+            var product = new ProductModel()
+            {
+                StockAmount = 0, // view'da stok miktarı her zaman ilk olarak 0 gelsin
+                ExpirationDate = DateTime.Now.AddMonths(6) // view'da son kullanma tarihi her zaman ilk olarak bugünün tarihinden 6 ay sonra gelsin
+            };
+            return View(product);
             #endregion
         }
 

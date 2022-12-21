@@ -16,6 +16,14 @@ namespace Business.Models
 		[Required(ErrorMessage = "{0} is required!")]
 		[MinLength(5, ErrorMessage = "{0} must be minimum {1} characters!")]
 		[MaxLength(10, ErrorMessage = "{0} must be maximum {1} characters!")]
+		[Compare("ConfirmPassword", ErrorMessage = "Passwords don't match!")] // Compare data annotation'ı üzerinden bu özellik
+																			  // belirtilen başka bir özellik ile veri bazında kıyaslanabilir
 		public string Password { get; set; }
+
+		[Required(ErrorMessage = "{0} is required!")]
+		[MinLength(5, ErrorMessage = "{0} must be minimum {1} characters!")]
+		[MaxLength(10, ErrorMessage = "{0} must be maximum {1} characters!")]
+		[DisplayName("Confirm Password")]
+		public string ConfirmPassword { get; set; }
 	}
 }

@@ -3,6 +3,7 @@
 using Business.Services;
 using DataAccess.Contexts;
 using DataAccess.Repositories;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
@@ -29,6 +30,33 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+#region Authentication
+builder.Services
+    .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme) 
+    // projeye Cookie authentication default'larýný kullanarak kimlik doðrulama ekliyoruz,
+    // bu default'larý Account area -> Users controller -> Login action'ýnda da kullan demiþtik, dolayýsýyla ayný olmalýlar
+	
+    .AddCookie(config => 
+    // oluþturulacak cookie'yi config action delegesi üzerinden konfigüre ediyoruz, action delegeleri func delegeleri gibi bir sonuç dönmez,
+    // üzerlerinden burada olduðu gibi genelde konfigürasyon iþlemleri yapýlýr
+	
+    {
+		config.LoginPath = "/Account/Users/Login"; 
+        // eðer sisteme giriþ yapýlmadan bir iþlem yapýlmaya çalýþýlýrsa kullanýcýyý Account area -> Users controller -> Login action'ýna yönlendir
+		
+        config.AccessDeniedPath = "/Account/Users/AccessDenied"; 
+        // eðer sisteme giriþ yapýldýktan sonra yetki dýþý bir iþlem yapýlmaya çalýþýlýrsa kullanýcýyý Account area -> Users controller -> AccessDenied
+        // action'ýna yönlendir
+		
+        config.ExpireTimeSpan = TimeSpan.FromMinutes(30); 
+        // sisteme giriþ yapýldýktan sonra oluþan cookie 30 dakika boyunca kullanýlabilsin
+		
+        config.SlidingExpiration = true; 
+        // SlidingExpiration true yapýlarak kullanýcý sistemde her iþlem yaptýðýnda cookie kullaným süresi yukarýda belirtilen 30 dakika uzatýlýr,
+        // eðer false atanýrsa kullanýcýnýn cookie ömrü yukarýda belirtilen 30 dakika sonra sona erer ve yeniden giriþ yapmak zorunda kalýr
+	});
+#endregion
+
 #region IoC Container : Inversion of Control Container (Baðýmlýlýklarýn Yönetimi) 
 // Alternatif olarak Business katmanýnda Autofac ve Ninject gibi kütüphaneler de kullanýlabilir.
 
@@ -53,12 +81,15 @@ builder.Services.AddScoped<ProductRepoBase, ProductRepo>(); // projede herhangi 
 
 builder.Services.AddScoped<CategoryRepoBase, CategoryRepo>(); 
 builder.Services.AddScoped<StoreRepoBase, StoreRepo>(); 
+builder.Services.AddScoped<UserRepoBase, UserRepo>(); 
 
 builder.Services.AddScoped<IProductService, ProductService>(); // projede herhangi bir class'ta IProductService tipinde constructor injection yapýldýðýnda
                                                                // ProductService objesini new'leyerek o class'a enjekte eder.
 
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IStoreService, StoreService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 #endregion
 
 var app = builder.Build();
@@ -85,7 +116,11 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthorization();
+#region Authentication
+app.UseAuthentication(); // sen kimsin?
+#endregion
+
+app.UseAuthorization(); // sen iþlem için yetkili misin?
 
 #region Area
 app.UseEndpoints(endpoints =>

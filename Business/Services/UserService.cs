@@ -56,7 +56,7 @@ namespace Business.Services
 
 		public IQueryable<UserModel> Query()
 		{
-			return _userRepo.Query(u => u.Role)
+			return _userRepo.Query(u => u.Role) // User entity'sindeki Role referansı üzerinden rolleri de sorguya dahil et
 				.OrderByDescending(u => u.IsActive) // önce kullanıcının aktifliğini azalan sıralıyoruz ki aktif olanları üstte görebilelim
 				.ThenBy(u => u.UserName) // sonra aktiflik sıralamasına göre kullanıcı adlarına göre artan sıralıyoruz
 				.Select(u => new UserModel()
@@ -66,7 +66,8 @@ namespace Business.Services
 					IsActive= u.IsActive,
 					Password = u.Password,
 					RoleId = u.RoleId,
-					UserName = u.UserName
+					UserName = u.UserName,
+					RoleNameDisplay = u.Role.Name
 				});
 		}
 
