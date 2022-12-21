@@ -8,7 +8,7 @@ namespace AppCore.DataAccess.EntityFramework.Bases
 {
     // Repository Pattern: Veritabanındaki tablolarda (entity) kolay ve merkezi olarak CRUD (create, read, update, delete)
     // işlemlerinin yapılmasını sağlayan tasarım desenidir (design pattern). Önce DbSet'ler üzerinde istenilen değişiklikler yapılır
-    // daha sonra tek bir iş olarak veritabanına yapılan değişiklikler SQL sorguları çalıştırılarak yansıtılır (unit of work).
+    // daha sonra tek bir iş olarak veritabanına yapılan değişiklikler SQL sorguları çalıştırılarak yansıtılır (Unit of Work).
 
 
 
@@ -26,16 +26,17 @@ namespace AppCore.DataAccess.EntityFramework.Bases
 
 
 
-    // new'lenebilen ve RecordBase'den miras alan tip olarak TEntity üzerinden herhangi bir tip (entity ve model) kullanacak, aynı zamanda IDisposable interface'ini implemente edecek class.
+    // new'lenebilen ve RecordBase'den miras alan tip olarak TEntity üzerinden herhangi bir tip (entity ve model) kullanacak,
+    // aynı zamanda IDisposable interface'ini implemente edecek class.
     public abstract class RepoBase<TEntity> : IDisposable where TEntity : RecordBase, new()
     {
-        protected DbContext DbContext { get; } // DbContext EntityFramework'ün CRUD işlemleri yapmamızı sağlayan temel class'ı,
-                                               // get; ile readonly yani sadece constructor üzerinden veya bu satırda set edilebilir.
-                                               // protected erişim bildirgeci ile DbContext'in ihtiyaç halinde sadece repository'lerde kullanılması sağlanır.
+        protected readonly DbContext _dbContext; // DbContext EntityFramework'ün CRUD işlemleri yapmamızı sağlayan temel class'ı,
+                                                 // readonly olarak sadece constructor üzerinden veya bu satırda set edilebilir.
+                                                 // protected erişim bildirgeci ile _dbContext'in ihtiyaç halinde sadece bu class'tan miras alan repository'lerde kullanılması sağlanır.
 
         protected RepoBase(DbContext dbContext) // dbContext Dependency Injection (Constructor Injection) ile RepoBase'e dışarıdan new'lenerek enjekte edilecek.
         {
-            DbContext = dbContext;
+            _dbContext = dbContext;
         }
 
         // Read işlemi: parametre olarak sorguya dahil olacak entity navigasyon özelliklerini alır (opsiyonel) ve ilgili entity için sorguyu oluşturur ancak çalıştırmaz.
@@ -47,7 +48,7 @@ namespace AppCore.DataAccess.EntityFramework.Bases
         // (örneğin Func delegesi bool sonuç dönüyorsa e => e.Id == 7 ya da e => e.Guid == "bd7caa37-2c5f-4df1-972f-cddca4314008").
         public virtual IQueryable<TEntity> Query(params Expression<Func<TEntity, object>>[] entitiesToInclude)
         {
-            var query = DbContext.Set<TEntity>().AsQueryable(); // TEntity tipindeki DbSet'i sorgu olarak al.
+            var query = _dbContext.Set<TEntity>().AsQueryable(); // TEntity tipindeki DbSet'i sorgu olarak al.
             foreach (var entityToInclude in entitiesToInclude) // parametre olarak gelen entity referanslarını sorguya dahil et.
             {
                 query = query.Include(entityToInclude);
@@ -76,7 +77,7 @@ namespace AppCore.DataAccess.EntityFramework.Bases
             entity.Guid = Guid.NewGuid().ToString(); // her eklenecek kayıt için tekil bir Guid oluşturup entity'e atıyoruz ki istenirse Id yerine Guid üzerinden de işlemler yapılabilsin
 
             //DbContext.Set<TEntity>().Add(entity); // aşağıdaki satır ile de ekleme işlemi yapılabilir.
-            DbContext.Add(entity);
+            _dbContext.Add(entity);
 
             if (save)
                 Save();
@@ -86,7 +87,7 @@ namespace AppCore.DataAccess.EntityFramework.Bases
         public virtual void Update(TEntity entity, bool save = true)
         {
             //DbContext.Set<TEntity>().Update(entity); // aşağıdaki satır ile de güncelleme işlemi yapılabilir.
-            DbContext.Update(entity);
+            _dbContext.Update(entity);
 
             if (save)
                 Save();
@@ -96,7 +97,7 @@ namespace AppCore.DataAccess.EntityFramework.Bases
         public virtual void Delete(TEntity entity, bool save = true)
         {
             //DbContext.Set<TEntity>().Remove(entity); // aşağıdaki satır ile de silme işlemi yapılabilir.
-            DbContext.Remove(entity);
+            _dbContext.Remove(entity);
 
             if (save)
                 Save();
@@ -105,7 +106,7 @@ namespace AppCore.DataAccess.EntityFramework.Bases
         // Delete işlemi: gönderilen id üzerinden TEntity'de RecordBase'den miras alınan Id özelliği ile entity'e ulaşır ve yukarıdaki Delete methoduna gönderir.
         public virtual void Delete(int id, bool save = true)
         {
-            var entity = DbContext.Set<TEntity>().Find(id); // Find methodu DbSet'ler ile primary key veya primary key'ler üzerinden kullanılabilir,
+            var entity = _dbContext.Set<TEntity>().Find(id); // Find methodu DbSet'ler ile primary key veya primary key'ler üzerinden kullanılabilir,
                                                             // eğer belirtilen id'ye sahip kayıt varsa kaydı obje olarak döner, yoksa null döner.
             Delete(entity, save);
         }
@@ -115,7 +116,7 @@ namespace AppCore.DataAccess.EntityFramework.Bases
         // tüm değişiklikleri tek seferde veritabanına yansıtır.
         public virtual void Delete(Expression<Func<TEntity, bool>> predicate, bool save = true)
         {
-            var entities = DbContext.Set<TEntity>().Where(predicate).ToList(); // ToList methodu sorgu oluşturulduktan sonra çağrılır ve geriye sorgu sonucundan
+            var entities = _dbContext.Set<TEntity>().Where(predicate).ToList(); // ToList methodu sorgu oluşturulduktan sonra çağrılır ve geriye sorgu sonucundan
                                                                                // dönen kayıtları bir obje listesi olarak döner.
             foreach (var entity in entities) 
             {
@@ -130,8 +131,8 @@ namespace AppCore.DataAccess.EntityFramework.Bases
         // save parametresi default false olarak atanmıştır, class dışında generic tipler bu methodda olduğu gibi kullanılabilir.
         public virtual void Delete<TRelationalEntity>(Expression<Func<TRelationalEntity, bool>> predicate, bool save = false) where TRelationalEntity : class, new()
         {
-            var relationalEntities = DbContext.Set<TRelationalEntity>().Where(predicate);
-            DbContext.Set<TRelationalEntity>().RemoveRange(relationalEntities);
+            var relationalEntities = _dbContext.Set<TRelationalEntity>().Where(predicate);
+            _dbContext.Set<TRelationalEntity>().RemoveRange(relationalEntities);
             if (save)
                 Save();
 		}
@@ -142,7 +143,7 @@ namespace AppCore.DataAccess.EntityFramework.Bases
         {
             try
             {
-                return DbContext.SaveChanges();
+                return _dbContext.SaveChanges();
             }
             catch (Exception exc)
             {
@@ -155,7 +156,7 @@ namespace AppCore.DataAccess.EntityFramework.Bases
 
         public void Dispose()
         {
-            DbContext?.Dispose(); // ?: DbContext null ise bu satırı atla, değilse Dispose et.
+            _dbContext?.Dispose(); // ?: DbContext null ise bu satırı atla, değilse Dispose et.
             GC.SuppressFinalize(this); // Garbage Collector'a işimizin bittiğini söylüyoruz ki objeyi en kısa sürede hafızadan temizlesin.
         }
     }
