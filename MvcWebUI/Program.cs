@@ -103,9 +103,9 @@ app.UseRequestLocalization(new RequestLocalizationOptions()
 });
 #endregion
 
-// Eðer istenirse AppCore -> MvcWebUI -> Environment class'ý altýndaki IsDevelopment özelliði burada atanarak örneðin Views -> Shared -> _Layout.cshtml
+// Eðer istenirse AppCore -> App -> Environment class'ý altýndaki IsDevelopment özelliði burada atanarak örneðin Views -> Shared -> _Layout.cshtml
 // view'ýnda sadece development ortamý için Seed Database link'inin gelmesi saðlanabilir.
-AppCore.MvcWebUI.Environment.IsDevelopment = app.Environment.IsDevelopment();
+AppCore.App.Environment.IsDevelopment = app.Environment.IsDevelopment();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
