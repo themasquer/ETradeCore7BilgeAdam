@@ -13,6 +13,9 @@ namespace Business.Models
         // ilgili entity'de referans olmayan özellikler veya başka bir deyişle veritabanındaki ilgili tablosundaki
         // sütun karşılığı olan özellikler entity'den kopyalanır.
 
+        // SOLID prensipleri gereği bu class'ta validasyon için data annotation'lar kullanmak yerine MVC FluentValidation
+        // gibi bir kütüphane üzerinden başka bir class'ta validasyonları yönetmek daha uygun olacaktır.
+
         #region Entity'den Kopyalanan Özellikler
         //[Required] // kullanıcıdan gelen model verisi validasyonu için zorunlu olacağını belirtir
         [Required(ErrorMessage = "{0} is required!")] // istenirse view'larda gösterilecek validasyon mesajları bu şekilde özelleştirilebilir,
@@ -73,13 +76,11 @@ namespace Business.Models
 
 
 
-        //[Required]
-        [Required(ErrorMessage = "{0} is required!")] // 0: varsa DisplayName'i (Category) yoksa özellik ismini (CategoryId) kullanır
 
         [DisplayName("Category")]  
         public int? CategoryId { get; set; } // ürünün kategorisi view'da bir drop down list üzerinden seçileceği ve Seçiniz item'ı üzerinden null gönderilebileceği
                                              // için CategoryId nullable yapılmalıdır ve eğer mutlaka seçim yapılması isteniyorsa Required attribute'u
-                                             // (data annotation) ile işaretlenmelidir.
+                                             // (data annotation) ile işaretlenmelidir, bu örnekte seçim yapılmasa da olur.
         #endregion
 
 

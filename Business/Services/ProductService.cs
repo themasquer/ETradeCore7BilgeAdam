@@ -106,8 +106,7 @@ namespace Business.Services
                                                       // bu yöntemde dikkat edilmesi gereken veritabanındaki tabloya insert işlemi yapıldığında CategoryId'nin 0 atanması durumunda
                                                       // kategori tablosunda 0 Id'li bir kategori bulunmadığından exception alınacağıdır.
                 // 2. yöntem:
-                CategoryId = model.CategoryId.Value, // CategoryId ProductModel'de zorunlu olarak tanımlandığından direkt olarak Value ile değerine ulaşıp entity CategoryId
-                                                     // özelliğine atayabiliriz.
+                CategoryId = model.CategoryId, 
 
                 // 1. yöntem: 
                 //Description = model.Description == null ? null : model.Description.Trim(), // Description verisinin null gelme ihtimali olduğundan ternary operator kullanarak
@@ -162,8 +161,7 @@ namespace Business.Services
 			{
                 Id = model.Id, // entity'nin Id özelliğini mutlaka atamalıyız ki Entity Framework veritabanı tablosunda hangi kaydın güncelleneceğini bilsin.
 
-				CategoryId = model.CategoryId.Value, // CategoryId ProductModel'de zorunlu olarak tanımlandığından direkt olarak Value ile değerine ulaşıp entity CategoryId
-													 // özelliğine atayabiliriz.
+				CategoryId = model.CategoryId, 
 				
 				Description = model.Description?.Trim(), // Description verisinin null gelme ihtimali olduğundan sonuna ? ekliyoruz ki null geldiğinde Trim methodunu çalıştırmasın
 														 // ve entity Description özelliğine null atasın, null gelmediğinde de gelen değeri entity Description özelliğine

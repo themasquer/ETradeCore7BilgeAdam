@@ -35,15 +35,18 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
 
-                        <li class="nav-item">
-                            <a class="nav-link text-white" asp-area="Database" asp-controller="Home" asp-action="Index">Seed Database</a>
-                            <!-- 
+                        @if (AppCore.MvcWebUI.Environment.IsDevelopment)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-warning" asp-area="Database" asp-controller="Home" asp-action="Index">Seed Database</a>
+                                <!-- 
                                 Development ortamında kullanılacak ilk verilerin sıfırdan oluşturulmasını sağlayan link. 
                                 Bu işlem Areas -> Database altındaki Database adındaki bir area tanımlanmış controller'ın action'ında gerçekleştirildiğinden
                                 asp-area mutlaka Database olarak belirtilmelidir.
                                 Projenin Controllers klasöründeki controller action'larına yönlendiren link'lerde asp-area="" olarak yazılır.
-                            -->
-                        </li>
+                                -->
+                            </li>
+                        }
 
                         <li class="nav-item"><!-- Menü elemanı. -->
                             <a class="nav-link text-white" asp-area="" asp-controller="Products" asp-action="Index">Products</a>

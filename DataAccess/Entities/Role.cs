@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DataAccess.Entities
 {
-	public class Role : RecordBase
+	public class Role : RecordBase // Rol
 	{
 		[Required]
 		[StringLength(20)]

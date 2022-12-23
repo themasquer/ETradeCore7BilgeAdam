@@ -87,17 +87,21 @@ Konu Anlatýmlý Proje Geliþtirme Aþamalarý:
 34) MvcWebUI -> Controllers -> Stores -> MVC Controller Entity Framework Scaffolding
 
 Kullanýcý Yönetimi: Ýstenirse kullanýcý yönetimi için Microsoft'un Identity Framework kütüphanesi kullanýlabilir.
-35) DataAccess -> Entities -> User ve Role entity'leri
-36) DataAccess -> Contexts -> ETradeContext -> Users ve Roles DbSet'leri
+35) DataAccess -> Entities -> User, UserDetail, Country, City ve Role entity'leri
+36) DataAccess -> Contexts -> ETradeContext -> Users, UserDetails, Countries, Cities ve Roles DbSet'leri
 37) DataAccess -> Repositories -> UserRepo (MvcWebUI -> Program.cs -> IoC Container)
 38) DataAccess -> Repositories -> RoleRepo (MvcWebUI -> Program.cs -> IoC Container)
-39) DataAccess -> Enums -> Roles
-40) Business -> Models -> UserModel
-41) Business -> Models -> AccountLoginModel
-42) Business -> Services -> UserService -> Query (MvcWebUI -> Program.cs -> IoC Container)
-43) Business -> Services -> AccountService -> Login (MvcWebUI -> Program.cs -> IoC Container)
-44) Business -> Models -> AccountRegisterModel
-45) Business -> Services -> UserService -> Add
-46) Business -> Services -> AccountService -> Register
-47) MvcWebUI -> Areas -> Accounts -> Controllers -> Home -> Register Action'larý ve View'ý
-48) MvcWebUI -> Areas -> Accounts -> Controllers -> Home -> Login Action'larý ve View'ý (MvcWebUI -> Program.cs -> Authentication)
+39) DataAccess -> Repositories -> CountryRepo (MvcWebUI -> Program.cs -> IoC Container)
+40) DataAccess -> Repositories -> CityRepo (MvcWebUI -> Program.cs -> IoC Container)
+41) DataAccess -> Enums -> Roles
+42) DataAccess -> Enums -> Sex
+43) Business -> Models -> UserModel
+44) Business -> Models -> UserDetailModel
+45) Business -> Models -> AccountLoginModel
+46) Business -> Services -> UserService -> Query (MvcWebUI -> Program.cs -> IoC Container)
+47) Business -> Services -> AccountService -> Login (MvcWebUI -> Program.cs -> IoC Container)
+48) Business -> Models -> AccountRegisterModel
+49) Business -> Services -> UserService -> Add
+50) Business -> Services -> AccountService -> Register
+51) MvcWebUI -> Areas -> Accounts -> Controllers -> Home -> Register Action'larý ve View'ý
+52) MvcWebUI -> Areas -> Accounts -> Controllers -> Home -> Login Action'larý ve View'ý (MvcWebUI -> Program.cs -> Authentication)
