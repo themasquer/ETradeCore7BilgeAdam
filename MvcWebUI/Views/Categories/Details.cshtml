@@ -32,13 +32,17 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a>&nbsp;|&nbsp;
-    <!-- 
-        view model objesinin Id'sini asp-route-id'ye atıyoruz ki bu id üzerinden bu ürünün düzenleme sayfasına (id parametreli Edit action'ı üzerinden) ulaşabilelim. 
-        Model objesinin null gelebilme ihtimali için sonunda ? kullanılmıştır, eğer null gelirse Id özelliğini kullanmadan bir işlem yapma, 
-        null gelmezse de model objesinin Id özelliğini kullan.
-    -->
-    
+    @if (User.IsInRole("Admin")) // eğer kullanıcı Admin rolündeyse Edit link'i gösterilsin
+    {
+        <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a>
+        <text>&nbsp;|&nbsp;</text>
+        @* <text>: Razor escape tag *@
+        <!-- 
+            view model objesinin Id'sini asp-route-id'ye atıyoruz ki bu id üzerinden bu ürünün düzenleme sayfasına (id parametreli Edit action'ı üzerinden) ulaşabilelim. 
+            Model objesinin null gelebilme ihtimali için sonunda ? kullanılmıştır, eğer null gelirse Id özelliğini kullanmadan bir işlem yapma, 
+            null gelmezse de model objesinin Id özelliğini kullan.
+        -->
+    }
     <a asp-action="Index">Back to Category List</a>
 </div>
 

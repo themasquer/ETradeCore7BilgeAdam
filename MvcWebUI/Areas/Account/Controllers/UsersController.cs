@@ -114,8 +114,12 @@ namespace MvcWebUI.Areas.Account.Controllers
                     // ve methodun dönüş tipinin başına async yazarak dönüş tipini de bir Task tipi içerisinde tip olarak (IActionResult) tanımlamalıyız
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
-                    // giriş işlemi başarılı olduğu için kullanıcıyı ReturnUrl üzerinden login'e geldiği controller ve action'a yönlendiriyoruz
-                    return Redirect(model.ReturnUrl);
+                    // giriş işlemi başarılı olduğu için kullanıcıyı ReturnUrl doluysa ReturnUrl üzerinden login'e geldiği controller ve action'a yönlendiriyoruz
+                    if (!string.IsNullOrWhiteSpace(model.ReturnUrl))
+                        return Redirect(model.ReturnUrl);
+                    return RedirectToAction("Index", "Home", new { area = "" }); // eğer ReturnUrl boşsa kullanıcıyı hoşgeldin view'ını
+                                                                                 // dönen Home controller -> Index action'ına area'sı olmadığı için
+                                                                                 // route value'da area = "" atayarak yönlendiriyoruz
                 }
                 ModelState.AddModelError("", result.Message);
             }

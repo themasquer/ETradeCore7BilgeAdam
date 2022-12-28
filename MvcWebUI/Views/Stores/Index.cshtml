@@ -30,19 +30,19 @@
     </thead>
     <tbody>
 		@foreach (var item in Model) {
-				<tr>
-					<td>
-						@Html.DisplayFor(modelItem => item.Name)
-					</td>
-					<td>
-						@Html.DisplayFor(modelItem => item.VirtualDisplay)
-					</td>
-					<td>
-						<a asp-action="Details" asp-route-id="@item.Id">Details</a>&nbsp;|&nbsp;
-						<a asp-action="Edit" asp-route-id="@item.Id">Edit</a>&nbsp;|&nbsp;
-						<a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-					</td>
-				</tr>
+			<tr>
+				<td>
+					@Html.DisplayFor(modelItem => item.Name)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.VirtualDisplay)
+				</td>
+				<td style="text-align: right;"><!-- td içerisindeki elemanları sağa hizala -->
+					<a asp-action="Details" asp-route-id="@item.Id">Details</a>&nbsp;|&nbsp;
+					<a asp-action="Edit" asp-route-id="@item.Id">Edit</a>&nbsp;|&nbsp;
+					<a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+				</td>
+			</tr>
 		}
     </tbody>
 </table>

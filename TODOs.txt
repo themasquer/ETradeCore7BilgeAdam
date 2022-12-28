@@ -1,3 +1,2 @@
-1) Index view'lerinde role göre link gösterimleri
-2) Register ve Login view'lerinde client-side validation kullanýmý
-3) Stores Index view'inde silme için AlertifyJS ve modal kullanýmlarý 
+Register ve Login view'lerinde client-side validation kullanýmý
+Stores Index view'inde silme için AlertifyJS ve modal kullanýmlarý 
