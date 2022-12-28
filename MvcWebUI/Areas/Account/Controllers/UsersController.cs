@@ -60,9 +60,14 @@ namespace MvcWebUI.Areas.Account.Controllers
         }
 
         // GET: Account/Users/Login
-        public IActionResult Login() // giriş
+        public IActionResult Login(string returnUrl) // giriş, returnUrl ile hangi sayfa üzerinden login'e geliniyorsa tekrar o sayfaya yönlendirilecek
         {
-            return View();
+            AccountLoginModel model = new AccountLoginModel() // view'da UserName ve Password'ün boş, ReturnUrl'nin de aksiyona parametre olarak gelen
+                                                              // returnUrl olacağı yeni bir model oluşturuyoruz
+            {
+                ReturnUrl = returnUrl
+            };
+            return View(model); // yukarıda new'lediğimiz modeli view'e gönderiyoruz
         }
 
         // POST: Account/Users/Login
@@ -109,9 +114,8 @@ namespace MvcWebUI.Areas.Account.Controllers
                     // ve methodun dönüş tipinin başına async yazarak dönüş tipini de bir Task tipi içerisinde tip olarak (IActionResult) tanımlamalıyız
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
-                    // giriş işlemi başarılı olduğu için kullanıcıyı ana hoşgeldin sayfasına yönlendiriyoruz,
-                    // bu sayfa bir area'nın içerisinde olmadığı için de area özelliğini içeren anonim tipteki objeyi route value parametresi olarak oluşturuyoruz
-                    return RedirectToAction("Index", "Home", new { area = "" });
+                    // giriş işlemi başarılı olduğu için kullanıcıyı ReturnUrl üzerinden login'e geldiği controller ve action'a yönlendiriyoruz
+                    return Redirect(model.ReturnUrl);
                 }
                 ModelState.AddModelError("", result.Message);
             }
@@ -121,6 +125,9 @@ namespace MvcWebUI.Areas.Account.Controllers
         public async Task<IActionResult> Logout() // çıkış
         {
             await HttpContext.SignOutAsync(); // Login aksiyonu ile oluşan çerezi (cookie) kaldırır
+
+            // projenin Home controller -> Index action'ı bir area'nın içerisinde olmadığı için area özelliğini içeren anonim tipteki objeyi
+            // route value parametresi olarak ve "" atayarak oluşturuyoruz
             return RedirectToAction("Index", "Home", new { area = "" });
         }
 

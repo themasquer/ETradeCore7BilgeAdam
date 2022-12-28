@@ -17,5 +17,7 @@ namespace Business.Models
 		[MinLength(3, ErrorMessage = "{0} must be minimum {1} characters!")]
 		[MaxLength(10, ErrorMessage = "{0} must be maximum {1} characters!")]
 		public string Password { get; set; }
+
+		public string ReturnUrl { get; set; }
 	}
 }

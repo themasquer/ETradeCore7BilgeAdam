@@ -168,13 +168,13 @@
     <div class="row mb-3">
         @Html.LabelFor(model => model.ExpirationDate, new { @class = "col-2 col-form-label"})
         <div class="col-5">
-            @Html.TextBoxFor(model => model.ExpirationDate, new { @class = "form-control", type = "date" }) @* ProductModel'deki ExpirationDate özelliği için type'ı date olan bir input oluşturur. *@
+            @Html.TextBoxFor(model => model.ExpirationDate, "{0:MM/dd/yyyy}", new { @class = "form-control expirationdate" }) @* ProductModel'deki ExpirationDate özelliği için type'ı text ve formatı ay/gün/yıl olan bir input oluşturur. *@
         </div>
     </div>
     <div class="row mb-3">
         @Html.LabelFor(model => model.CategoryId, new { @class = "col-2 col-form-label"})
         <div class="col-5">
-            @Html.DropDownListFor(model => model.CategoryId, ViewBag.Categories as SelectList, "-- Select --", new { @class = "form-select" }) 
+            @Html.DropDownListFor(model => model.CategoryId, ViewBag.Categories as SelectList, "-- Select --", new { @class = "form-select select2" }) 
             @* 
                 ProductModel'deki CategoryId özelliği için bir select oluşturur. 
                 İkinci parametre üzerinden action'da atanan ViewBag.Categories (ViewData["Categories"] de kullanılabilir) objesini new'lenen SelectList tipine dönüştür.
@@ -188,7 +188,7 @@
     <div class="row mb-3">
         @Html.LabelFor(model => model.StoreIds, new { @class = "col-2 col-form-label"})
         <div class="col-5">
-            @Html.ListBoxFor(model => model.StoreIds, ViewBag.Stores as MultiSelectList, new { @class = "form-select" })
+            @Html.ListBoxFor(model => model.StoreIds, ViewBag.Stores as MultiSelectList, new { @class = "form-select select2" })
             @*
                 ProductModel'deki StoreIds özelliği için bir multiple attribute'lu select oluşturur.
                 İkinci parametre üzerinden action'da atanan ViewBag.Stores (ViewData["Stores"] de kullanılabilir) objesini new'lenen MultiSelectList tipine dönüştür.
@@ -217,3 +217,38 @@
     </div>
 } @* form HTML tag'ini burada kapatır. *@
 @* Alternatif olarak using kullanmadan Html.BeginForm methodu kullanılabilir ancak bu durumda form HTML tag'inin kapanışı için Html.EndForm methodu kullanılmalıdır. *@
+
+@section Scripts {
+    @*
+        Bootstrap-Datepicker gibi Javascript - CSS kütüphaneleri wwwroot -> lib seçilip fare ile sağ tıklanarak Add -> Client-Side Library
+        tıklanıp örneğin Bootstrap-Datepicker için bootstrap-datepicker araması yapılıp çıkan sonuç seçilerek ve Bootstrap-Datepicker 
+        web sitesi (https://uxsolutions.github.io/bootstrap-datepicker) üzerinden hem kütüphane adı yazımı hem de versiyonu ile doğru kütüphane 
+        olduğu kontrol edilerek projeye eklenebilir.
+        Bootstrap-Datepicker kütüphanesi tüm view'larda kullanılmayacağı için _Layout view'ında eklemek yerine
+        sadece ürün ekleme ve güncelleme sayfalarında kullanılacağı Views -> Products -> Create ve Views -> Products -> Edit view'larında 
+        Scripts section'ına css ve js kütüphaneleri referansları eklenmelidir ve takvim text box'larını Bootstrap-Datepicker'a dönüştürecek 
+        jQuery kodları yazılmalıdır.
+        Yukarıdakilerin aynısı select2 (https://select2.org) Javascript - CSS kütüphanesi için de uygulanabilir.
+    *@
+    <link rel="stylesheet" href="/lib/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" />
+    <script src="/lib/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
+    @*<script src="/plugins/bootstrap-datepicker/locales/bootstrap-datepicker.tr.min.js"></script>*@ @* Türkçe takvim için *@
+
+    <link rel="stylesheet" href="/lib/select2/css/select2.min.css" />
+    <script src="/lib/select2/js/select2.min.js"></script>
+    @*<script src="/lib/select2/js/i18n/tr.min.js"></script>*@ @* Türkçe select2 için *@
+
+    <script>
+        $(function(){
+            $('.expirationdate').datepicker({ // class'ı expirationdate olan text box'ları datepicker'a dönüştür
+                todayBtn: "linked",
+                orientation: "top auto",
+                autoclose: true,
+                todayHighlight: true,
+                //language: "tr" // Türkçe takvim için
+            });
+
+            $(".select2").select2(); // class'ı select2 olan drop down list ve list box'ları select2'ye dönüştür
+        });
+    </script>
+}

@@ -31,18 +31,32 @@
                 <label asp-for="Password" class="col-2 col-form-label"></label>
 				<div class="col-4">
 
-					<input asp-for="Password" class="form-control" type="password" />
+					<input asp-for="Password" class="form-control" type="password" id="password" />
 					@* bu input'un type attribute'u password yapılmalıdır ki şifre kapalı bir şekilde girilebilsin *@
 
 					<span asp-validation-for="Password" class="text-danger"></span>
 				</div>
+
+				<!-- Şifre gösterme ve gizleme: -->
+				<div class="col-5">
+					<a id="showhidepassword" href="#" title="Show / Hide Password">Show / Hide Password</a>
+					<!-- a tag'i ile href attribute'u "#" veya "" atanarak link'in herhangi bir adrese yönlendirme yapmaması sağlanabilir  -->
+				</div>
+
             </div>
 			<div class="row mb-3">
                 <label asp-for="ConfirmPassword" class="col-2 col-form-label"></label>
 				<div class="col-4">
-					<input asp-for="ConfirmPassword" class="form-control" type="password" />
+					<input asp-for="ConfirmPassword" class="form-control" type="password" id="confirmpassword" />
 					<span asp-validation-for="ConfirmPassword" class="text-danger"></span>
 				</div>
+
+				<!-- Şifre onay gösterme ve gizleme: -->
+				<div class="col-5">
+					<a id="showhideconfirmpassword" href="" title="Show / Hide Confirm Password">Show / Hide Confirm Password</a>
+					<!-- a tag'i ile href attribute'u "#" veya "" atanarak link'in herhangi bir adrese yönlendirme yapmaması sağlanabilir  -->
+				</div>
+
             </div>
 
 			<!-- Aşağıdaki Tag Helper'larda view model'inin UserDetail özelliği üzerinden Sex, Email, Phone, CountryId, CityId ve Address özelliklerini kullandık -->
@@ -125,7 +139,7 @@
 
 	<script>
 		$(function(){
-
+			// AJAX (Asynchronous Javascript and XML) kullanılarak seçilen ülkeye göre şehirlerin doldurulması:
 			$("#countries").off("change"); 
 			// eğer istenirse countries id'sine sahip html elemanının (select) daha önce tanımlanmış event'i bu şekilde kaldırılabilir, 
 			// bazen bu event kaldırılmazsa sunucuya bu event üzerinden birden çok istek gönderilmesi durumu oluşabiliyor, 
@@ -178,8 +192,6 @@
 
 					);
 
-					
-
 					//$.ajax({
 					//	cache: false, // istek sonucunun cache'den (tarayıcının saklama alanı) getirilmesini engeller, her zaman sunucudan sonucu çeker
 					//	url: "/Cities/GetCities", // istekte bulunulacak url (adres)
@@ -198,10 +210,35 @@
 					//	}
 					//});
 
-
-
 				}
 
+			});
+
+
+
+			// Şifre ve şifre onay gösterme ve gizleme:
+			var showPassword = false; // link'a tıklandıkça güncellenecek global değişken
+			$(document).on('click', '#showhidepassword', function (event) { // showhidepassword id'sine sahip link'e tıklama event'i tanımlıyoruz
+																			// ve function'a event parametresini gönderiyoruz
+				event.preventDefault(); // a tag'inin default yönlendirme event'ini iptal ediyoruz ki sanki bir buton gibi çalışsın
+				showPassword = !showPassword; // daha önce atadığımız değişkeni her link'e tıklandığında değiliyle güncelliyoruz, 
+											  //mesela değişkenin ilk değeri burada false, link'e tıklandığında true olarak 
+											  // yine tıklandığında ise false olarak güncelliyoruz ve link'e tıklandıkça böyle devam edecek
+				if (showPassword) // eğer değişken true ise şifreyi göster demektir
+					$("#password").prop("type", "text"); // id'si password olan HTML input'una ulaşıp type attribute'unu şifreyi görebilmek için text yapıyoruz
+				else // eğer değişken false ise şifreyi gizle demektir
+					$("#password").prop("type", "password"); // id'si password olan HTML input'una ulaşıp type attribute'unu şifreyi gizleyebilmek için password yapıyoruz
+			});
+
+			// Şifre onay için de yukarıdaki adımları izliyoruz
+			var showConfirmPassword = false;
+			$(document).on('click', '#showhideconfirmpassword', function (event) {
+				event.preventDefault();
+				showConfirmPassword = !showConfirmPassword;
+				if (showConfirmPassword)
+					$("#confirmpassword").prop("type", "text");
+				else
+					$("#confirmpassword").prop("type", "password");
 			});
 		});
 	</script>

@@ -57,7 +57,7 @@
     ve bu action'da TempData["Message"]'ı atamadığımızdan null olacaktır, bu yüzden de p tag'ini yazdırmaya gerek yoktur.
 *@
 
-<table class="table">
+<table id="products" class="display" style="width: 100%;">
     <thead>
         <!-- Sütun başlıkları -->
         <tr>
@@ -152,6 +152,44 @@
         }
     </tbody>
 </table>
+
+@section Scripts {
+    @* 
+        DataTables gibi Javascript - CSS kütüphaneleri wwwroot -> lib seçilip fare ile sağ tıklanarak Add -> Client-Side Library
+        tıklanıp örneğin DataTables için datatables araması yapılıp çıkan sonuç seçilerek ve DataTables web sitesi (https://datatables.net) 
+        üzerinden hem kütüphane adı yazımı hem de versiyonu ile doğru kütüphane olduğu kontrol edilerek projeye eklenebilir.
+        DataTables kütüphanesi tüm view'larda kullanılmayacağı için _Layout view'ında eklemek yerine
+        sadece ürün listeleme sayfasında kullanılacağı Views -> Products -> Index view'ında Scripts section'ına
+        css ve js kütüphaneleri referansları eklenmelidir ve HTML table'ı DataTable'a dönüştürecek jQuery kodları yazılmalıdır.
+    *@
+    <link rel="stylesheet" href="/lib/datatables/css/jquery.dataTables.min.css" /><!-- / ile kök klasör olan wwwroot'a göre ihtiyaç duyulan dosya tanımlanabilir. -->
+    <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script><!-- ~/ ile de kök klasör olan wwwroot'a göre ihtiyaç duyulan dosya tanımlanabilir. -->
+    <script>
+        $(function() { // jQuery fonksiyonu: sayfa yüklendikten sonra
+            $("#products").DataTable({ // id'si products olan table'ı data table'a dönüştür
+                language: {
+                    // Eğer data table Türkçe olarak kullanılmak isteniyorsa wwwroot -> json klasörü altına datatablesTurkish.json dosyası kopyalanmalıdır.
+                    // Eğer kullanılan metinsel bir dosyada (JSON ve XML de metinsel dosyalardır) Türkçe karakter sorunu varsa dosya Notepad ile açılıp 
+                    // kodlama (encoding) UTF-8'e değiştirilerek kaydedilmelidir.
+                    
+                    //url: "/json/datatablesTurkish.json" // uygulamamız İngilizce olduğu için bu kısmı comment'e aldık
+                }
+            });
+        });
+        /*
+        alternatif olarak sayfa yüklendikten sonra aşağıdaki şekilde de istenilen kodlar çalıştırılabilir
+        $(document).ready(function() {
+            $("#products").DataTable({
+                language: {
+                    url: "/json/datatablesTurkish.json"
+                }
+            });
+        });
+        */
+    </script>
+}
+
+
 
 @*
     ASP.NET Core MVC'deki Genel Kullanılan HTML Helper'lar:
