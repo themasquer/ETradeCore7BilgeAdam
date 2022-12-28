@@ -1,10 +1,13 @@
 ﻿#nullable disable
 using Business.Models;
 using Business.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MvcWebUI.Controllers
 {
+    [Authorize(Roles = "Admin")] // Controller üzerinde tanımlandığından sadece sisteme giriş yapmış yani authentication cookie'si olanlar
+                                 // ve Admin rolündekiler bu controller'ın tüm action'larını çağırabilir
     public class StoresController : Controller
     {
         // Add service injections here
@@ -106,7 +109,7 @@ namespace MvcWebUI.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            // TODO: Add delete service logic here
+            // Add delete service logic here
             var result = _storeService.Delete(id);
             TempData["Message"] = result.Message;
             return RedirectToAction(nameof(Index));

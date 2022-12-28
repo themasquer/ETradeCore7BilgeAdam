@@ -97,11 +97,24 @@ Kullanýcý Yönetimi: Ýstenirse kullanýcý yönetimi için Microsoft'un Identity Fram
 42) DataAccess -> Enums -> Sex
 43) Business -> Models -> UserModel
 44) Business -> Models -> UserDetailModel
-45) Business -> Models -> AccountLoginModel
-46) Business -> Services -> UserService -> Query (MvcWebUI -> Program.cs -> IoC Container)
-47) Business -> Services -> AccountService -> Login (MvcWebUI -> Program.cs -> IoC Container)
-48) Business -> Models -> AccountRegisterModel
-49) Business -> Services -> UserService -> Add
-50) Business -> Services -> AccountService -> Register
-51) MvcWebUI -> Areas -> Accounts -> Controllers -> Home -> Register Action'larý ve View'ý
-52) MvcWebUI -> Areas -> Accounts -> Controllers -> Home -> Login Action'larý ve View'ý (MvcWebUI -> Program.cs -> Authentication)
+45) Business -> Models -> CountryModel
+46) Business -> Models -> CityModel
+47) Business -> Models -> AccountLoginModel
+48) Business -> Services -> UserService -> Query (MvcWebUI -> Program.cs -> IoC Container)
+49) Business -> Services -> AccountService -> Login (MvcWebUI -> Program.cs -> IoC Container)
+50) Business -> Models -> AccountRegisterModel
+51) Business -> Services -> UserService -> Add
+52) Business -> Services -> AccountService -> Register
+53) Business -> Services -> CountryService -> Query (MvcWebUI -> Program.cs -> IoC Container)
+54) Business -> Services -> CountryService -> GetList
+55) Business -> Services -> CountryService -> GetItem (id parametreli)
+56) Business -> Services -> CityService -> Query (MvcWebUI -> Program.cs -> IoC Container)
+57) Business -> Services -> CityService -> GetList (countryId parametreli)
+58) Business -> Services -> CityService -> GetList (parametresiz)
+59) Business -> Services -> CityService -> GetItem (id parametreli)
+60) MvcWebUI -> Controllers -> CitiesController -> GetCities (countryId parametreli)
+61) MvcWebUI -> Areas -> Accounts -> Controllers -> Home -> Register Action'larý ve View'ý
+62) MvcWebUI -> Areas -> Accounts -> Controllers -> Home -> Login Action'larý ve View'ý (MvcWebUI -> Program.cs -> Authentication)
+63) MvcWebUI -> Views -> Shared -> _Layout.cshtml -> User üzerinden giriþ yapan kullanýcýya göre menü özelleþtirmeleri
+64) MvcWebUI -> Views -> Home -> Welcome.cshtml -> User üzerinden kullanýcý adý gösterimi
+65) MvcWebUI -> Controllers -> Categories, Products ve Stores -> Authorize attribute'larý

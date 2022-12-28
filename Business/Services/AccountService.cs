@@ -40,7 +40,8 @@ namespace Business.Services
 			// dolayısıyla hem sorgulanan kullanıcı objesi (userResultModel) hem de işlem sonucunu SuccessResult objesi olarak methoddan dönüyoruz,
 			// Account area -> Users controller -> Login action'ında sadece kullanıcı adı ve role ihtiyacımız olduğu için objemizi bu özellikler üzerinden dolduruyoruz
 			userResultModel.UserName = user.UserName;
-			userResultModel.RoleNameDisplay = user.RoleNameDisplay;
+			userResultModel.Role.Name = user.Role.Name;
+
 			return new SuccessResult(); 
 		}
 
@@ -48,8 +49,8 @@ namespace Business.Services
 		{
 			var user = new UserModel()
 			{
-				IsActive = true, // istenirse burada olduğu gibi tüm kayıt yapan kullanıcılar aktif yapılabilir veya aktif yapılmayarak örneğin e-posta gönderimi sağlanıp
-								 // gönderilen link'e tıklandıktan sonra kullanıcının aktiflik durumu aktif olarak güncellenebilir
+				IsActive = true, // istenirse burada olduğu gibi tüm kayıt yapan kullanıcılar aktif yapılabilir veya aktif yapılmayarak örneğin e-posta gönderimi
+								 // sağlanıp gönderilen link'e tıklandıktan sonra kullanıcının aktiflik durumu aktif olarak güncellenebilir
 
 				Password = accountRegisterModel.Password,
 				UserName = accountRegisterModel.UserName,
@@ -57,11 +58,23 @@ namespace Business.Services
                 RoleId = (int)Roles.User, // Roles enum'ı üzerinden RoleId'yi atamak hem veritabanındaki rol tablosundaki id'ler güncellenirse bu enum üzerinden
 										  // kolayca bu değişikliğin uygulanabilmesini hem de her bir rolün id'si neydi diye veritabanındaki tabloya
 										  // sürekli bakılmasından kurtulmamızı sağlar
+
+				UserDetail = new UserDetailModel() // kullanıcının detay verilerini içeren UserDetail referans özelliğini de new'leyip
+												   // accountRegisterModel'a göre dolduruyoruz
+				{
+					Address = accountRegisterModel.UserDetail.Address,
+					CityId = accountRegisterModel.UserDetail.CityId,
+					CountryId = accountRegisterModel.UserDetail.CountryId,
+					Email = accountRegisterModel.UserDetail.Email,
+					Phone = accountRegisterModel.UserDetail.Phone,
+					Sex = accountRegisterModel.UserDetail.Sex
+				}
             };
 
 			// 1. yöntem:
-			//return _userService.Add(user); // UserService'teki Add methodu bize sonuç döndüğünden ve bu sonucu dönerek Register methodunu çağırdığımız yerde kullanabileceğimizden
-											 // UserService'teki Add methodundan dönen sonucu Register methodu sonucu olarak dönebiliriz
+			//return _userService.Add(user); // UserService'teki Add methodu bize sonuç döndüğünden ve bu sonucu dönerek Register methodunu
+											 // çağırdığımız yerde kullanabileceğimizden UserService'teki Add methodundan dönen sonucu Register
+											 // methodu sonucu olarak dönebiliriz
 			// 2. yöntem:
 			var result = _userService.Add(user); // UserService Add methodunun sonucunu bir result objesine atıyoruz
 			if (!result.IsSuccessful) // eğer işlem başarılı değilse

@@ -1,4 +1,6 @@
-﻿@model AccountRegisterModel
+﻿@using DataAccess.Enums; @* Sex enum'ını sadece burada kullanacağımızdan Views -> _ViewImports.cshtml içerisine yazmayı tercih etmedik *@
+
+@model AccountRegisterModel
 @*Model namespace using directive should be added to _ViewImports.cshtml.*@
 
 @* 
@@ -12,22 +14,22 @@
 }
 
 <h1>@ViewData["Title"]</h1>
-
+<hr />
 <div class="row">
-    <div class="col-12">
+    <div class="offset-4 col-8">
         <form asp-action="Register">
 		@Html.AntiForgeryToken()
             <div asp-validation-summary="All" class="text-danger"></div>
             <div class="row mb-3">
                 <label asp-for="UserName" class="col-2 col-form-label"></label>
-				<div class="col-5">
+				<div class="col-4">
 					<input asp-for="UserName" class="form-control" />
 					<span asp-validation-for="UserName" class="text-danger"></span>
 				</div>
             </div>
             <div class="row mb-3">
                 <label asp-for="Password" class="col-2 col-form-label"></label>
-				<div class="col-5">
+				<div class="col-4">
 
 					<input asp-for="Password" class="form-control" type="password" />
 					@* bu input'un type attribute'u password yapılmalıdır ki şifre kapalı bir şekilde girilebilsin *@
@@ -37,13 +39,70 @@
             </div>
 			<div class="row mb-3">
                 <label asp-for="ConfirmPassword" class="col-2 col-form-label"></label>
-				<div class="col-5">
+				<div class="col-4">
 					<input asp-for="ConfirmPassword" class="form-control" type="password" />
 					<span asp-validation-for="ConfirmPassword" class="text-danger"></span>
 				</div>
             </div>
+
+			<!-- Aşağıdaki Tag Helper'larda view model'inin UserDetail özelliği üzerinden Sex, Email, Phone, CountryId, CityId ve Address özelliklerini kullandık -->
+			<div class="row mb-3">
+				<label asp-for="UserDetail.Sex" class="col-2 col-form-label"></label>
+				<div class="col-4 divsex"><!-- wwwroot -> css -> site.css içerisinde divsex diye bir CSS class'ı oluşturup radio button'lar için padding tanımlıyoruz -->
+
+					@* Radio button'lar için 1. yöntem: HTML Helpers: *@
+					@*@Html.RadioButtonFor(m => m.Sex, (int)Sex.Woman) @Sex.Woman
+					&nbsp;
+					@Html.RadioButtonFor(m => m.Sex, (int)Sex.Man) @Sex.Man*@
+
+					@* Radio button'lar için 2. yöntem: Tag Helpers: *@
+                    <input asp-for="UserDetail.Sex" type="radio" value="@((int)Sex.Woman)" checked /> @Sex.Woman
+                    &nbsp;
+					<input asp-for="UserDetail.Sex" type="radio" value="@((int)Sex.Man)" /> @Sex.Man
+
+				</div>
+            </div>
+			<div class="row mb-3">
+				<label asp-for="UserDetail.Email" class="col-2 col-form-label"></label>
+				<div class="col-4">
+					<input asp-for="UserDetail.Email" class="form-control" />
+					<span asp-validation-for="UserDetail.Email" class="text-danger"></span>
+				</div>
+			</div>
+			<div class="row mb-3">
+				<label asp-for="UserDetail.Phone" class="col-2 col-form-label"></label>
+				<div class="col-4">
+					<input asp-for="UserDetail.Phone" class="form-control" />
+					<span asp-validation-for="UserDetail.Phone" class="text-danger"></span>
+				</div>
+			</div>
+			<div class="row mb-3">
+				<label asp-for="UserDetail.CountryId" class="col-2 col-form-label"></label>
+				<div class="col-4">
+					<select asp-for="UserDetail.CountryId" class="form-select" asp-items="ViewBag.Countries" id="countries">
+						<option value="">-- Select Country --</option>
+					</select>
+					<span asp-validation-for="UserDetail.CountryId" class="text-danger countriesmessage"></span>
+				</div>
+			</div>
+			<div class="row mb-3">
+				<label asp-for="UserDetail.CityId" class="col-2 col-form-label"></label>
+				<div class="col-4">
+					<select asp-for="UserDetail.CityId" class="form-select" asp-items="ViewBag.Cities" id="cities">
+						<option value="">-- Select Country --</option>
+					</select>
+					<span asp-validation-for="UserDetail.CityId" class="text-danger"></span>
+				</div>
+			</div>
+			<div class="row mb-3">
+				<label asp-for="UserDetail.Address" class="col-2 col-form-label"></label>
+				<div class="col-4">
+					<textarea asp-for="UserDetail.Address" class="form-control" rows="3"></textarea>
+					<span asp-validation-for="UserDetail.Address" class="text-danger"></span>
+				</div>
+			</div>
             <div class="row mb-3">
-				<div class="offset-2 col-5">
+				<div class="offset-2 col-4">
 					<input type="submit" value="Register" class="btn btn-success" />
 				</div>
             </div>
@@ -51,6 +110,101 @@
     </div>
 </div>
 
+@section Scripts {
 
+	<script src="/lib/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.min.js"></script>
+	@*
+		Eğer bir web sayfasında yapılmak istenen işlem dışında (örneğin bu sayfada kullanıcı verilerinin girilip kaydedilmesi)
+		başka bir işleme ihtiyaç varsa (örneğin bu sayfada ülke değişikliğine göre şehirlerin doldurulması) AJAX
+		(Asynchronous Javascript and XML) kullanılır. 
+		AJAX Javascript üzerinden kullanılabildiği gibi jQuery üzerinden de daha kolay bir şekilde kullanılabilir.
+		AJAX kullanabilmek için mutlaka önce wwwroot -> lib altında Add -> Client-Side Library ile jquery-ajax-unobtrusive
+		aratılarak indirilmesi ve AJAX kullanılmak istenen sayfaya da script kaynağının (referansının) 
+		yukarıdaki şekilde eklenmesi gerekmektedir.
+	*@
+
+	<script>
+		$(function(){
+
+			$("#countries").off("change"); 
+			// eğer istenirse countries id'sine sahip html elemanının (select) daha önce tanımlanmış event'i bu şekilde kaldırılabilir, 
+			// bazen bu event kaldırılmazsa sunucuya bu event üzerinden birden çok istek gönderilmesi durumu oluşabiliyor, 
+			// ilgili controller action'ına bir debug pointer konup bu durum uygulama Debug modunda çalıştırılarak test edilerek eğer birden çok
+			// bu break point'te web uygulaması duruyorsa bu action'a birden çok istek geliyor demektir, 
+			// böyle durumlarda event kaldırılıp tekrar eklenmelidir
+
+			$("#countries").change(function() { // ülkeler drop down list'inde seçim değiştiğinde çalışacak change event'i
+
+				$("#cities").empty(); // önce şehirler drop down list'indeki elemanları tamamen temizliyoruz ki seçili ülke id'ye göre tekrar doldurabilelim
+
+				$(".countriesmessage").text(""); // kullanıcı ülke seçmezse ülke seçiniz mesajını countriesmessage class'ına sahip span içerisinde yazdıracağız
+
+				var selectedCountryId = $("#countries").val(); // ülkeler drop down list'i üzerinden kullanıcının seçtiği ülkenin id'sini alıyoruz
+
+				if (selectedCountryId == "") { // eğer kullanıcının seçtiği option'ın value'su "" ise kullanıcı -- Select Country -- seçmiş demektir
+
+					$(".countriesmessage").text("Please select a country..."); // bu durumda kullanıcıya lütfen ülke seçiniz mesajını gösteriyoruz
+
+					$("#cities").append('<option value="">-- Select Country --</option>'); // daha önce elemanlarını boşalttığımız şehirler drop down list'inin sonuna ülke seçiniz option'ını ekliyoruz
+																						   // HTML elemanlarında attribute'ları " ile atadığımız için Javascript'te
+																						   // eğer burada olduğu gibi bir HTML elemanı oluşturulmak isteniyorsa
+																						   // string veri için " yerine ' kullanılması yazımı daha kolaylaştırır
+			
+				} else { // bu durumda kullanıcı ülke seçmiş demektir
+
+					$.getJSON( // jQuery'nin getJSON function'ı ile ilk parametre olarak url (unified resource locator) yani adresi,
+							   // ikinci parametre olarak veriyi Cities controller'ının GetCities action'ının parametresi olarak seçilen ülke id şeklinde göndererek
+							   // AJAX isteği sonucunu (controller action'ı üzerinden JSON formatında dönen sonuç) function içerisinde cities kolleksiyon değişkeni 
+							   // üzerinden alarak önce şehirler drop down list'ine şehir seçiniz option'ını, daha sonra da cities değişkeni üzerinden
+							   // dönen şehirleri bir döngü ile şehirler drop down list'ine option'lar olarak ekliyoruz,
+							   // $.getJSON methodu yerine $.ajax kullanılarak da AJAX isteklerinde bulunulabilir, en aşağıda örneğine bakılabilir 
+
+						"/Cities/GetCities",
+
+						{ countryId: selectedCountryId },
+
+						function(cities) {
+
+							$("#cities").append('<option value="">-- Select City --</option>');
+
+							for (const city of cities) { // şehirler kolleksiyonundaki her bir readonly şehir döngüsü
+
+								$("#cities").append('<option value="' + city.id + '">' + city.name + '</option>');
+								// örneğin ~/Cities/GetCities/1 adresi üzerinden JSON formatında dönen CityModel listesi tipindeki verinin 
+								// Id ve Name özellikleri küçük harfle başladığından buna dikkat ederek bu özelliklere ulaşmalıyız
+
+							}
+						}
+
+					);
+
+					
+
+					//$.ajax({
+					//	cache: false, // istek sonucunun cache'den (tarayıcının saklama alanı) getirilmesini engeller, her zaman sunucudan sonucu çeker
+					//	url: "/Cities/GetCities", // istekte bulunulacak url (adres)
+					//	type: "get", // istekte bulunacağımız action'ın bir get veya post action'ı olacağını belirtir
+					//	dataType: "json", // örneğin ~/Cities/GetCities/1 çağrımı sonucunda dönecek veri formatının JSON olacağını belirtir
+					//	data: { countryId: selectedCountryId }, // istekle action'a gönderilecek countryId parametresi üzerinden veri
+					//	success: function(cities) { // eğer istek başarılı sonuç dönerse dönen yanıttaki veri cities kolleksiyonu olarak alınır
+					//		$("#cities").append('<option value="">-- Select City --</option>'); // önce şehir seçiniz option'ını ekliyoruz
+					//		for (const city of cities) { // sonra cities üzerinden dönen her bir readonly şehri option'lar olarak şehirler drop down list'inin sonuna ekliyoruz
+					//			$("#cities").append('<option value="' + city.id + '">' + city.name + '</option>');
+					//		}
+					//	},
+					//	error: function() { // isteğin başarısız sonucu dönmesi durumunda kullanıcıyı alert ile bilgilendiriyoruz veya tarayıcının console'una yazdırıyoruz
+					//		alert("An error occured during AJAX request!");
+					//		console.log("An error occured during AJAX request!");
+					//	}
+					//});
+
+
+
+				}
+
+			});
+		});
+	</script>
+}
 
 

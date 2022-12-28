@@ -33,8 +33,7 @@ builder.Services.AddControllersWithViews();
 #region Authentication
 builder.Services
     .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme) 
-    // projeye Cookie authentication default'larýný kullanarak kimlik doðrulama ekliyoruz,
-    // bu default'larý Account area -> Users controller -> Login action'ýnda da kullan demiþtik, dolayýsýyla ayný olmalýlar
+    // projeye Cookie authentication default'larýný kullanarak kimlik doðrulama ekliyoruz
 	
     .AddCookie(config => 
     // oluþturulacak cookie'yi config action delegesi üzerinden konfigüre ediyoruz, action delegeleri func delegeleri gibi bir sonuç dönmez,
@@ -82,6 +81,8 @@ builder.Services.AddScoped<ProductRepoBase, ProductRepo>(); // projede herhangi 
 builder.Services.AddScoped<CategoryRepoBase, CategoryRepo>(); 
 builder.Services.AddScoped<StoreRepoBase, StoreRepo>(); 
 builder.Services.AddScoped<UserRepoBase, UserRepo>(); 
+builder.Services.AddScoped<CountryRepoBase, CountryRepo>(); 
+builder.Services.AddScoped<CityRepoBase, CityRepo>(); 
 
 builder.Services.AddScoped<IProductService, ProductService>(); // projede herhangi bir class'ta IProductService tipinde constructor injection yapýldýðýnda
                                                                // ProductService objesini new'leyerek o class'a enjekte eder.
@@ -90,6 +91,8 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IStoreService, StoreService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<ICountryService, CountryService>();
+builder.Services.AddScoped<ICityService, CityService>();
 #endregion
 
 var app = builder.Build();

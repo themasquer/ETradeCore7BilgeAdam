@@ -18,7 +18,7 @@
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3"><!-- Bootstrap menü. -->
             <div class="container-fluid"><!-- container Bootstrap class'ı: sağda ve solda belli bir miktar boşluk bırakır, container-fluid Bootstrap class'ı: tüm sayfayi genişlik olarak kaplar. -->
                 
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">E-Trade</a>
+                <a class="navbar-brand text-warning" asp-area="" asp-controller="Home" asp-action="Index">E-Trade</a>
                 <!-- 
                     Sayfanın sol üst köşesindeki tıklandığında Home controller'ının Index action'ına yönlendiren link. 
                     asp-area, asp-controller ve asp-action ASP.NET Core MVC'deki tag helper'lardandır.
@@ -38,7 +38,7 @@
                         @if (AppCore.App.Environment.IsDevelopment)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-warning" asp-area="Database" asp-controller="Home" asp-action="Index">Seed Database</a>
+                                <a class="nav-link text-danger" asp-area="Database" asp-controller="Home" asp-action="Index">Seed Database</a>
                                 <!-- 
                                 Development ortamında kullanılacak ilk verilerin sıfırdan oluşturulmasını sağlayan link. 
                                 Bu işlem Areas -> Database altındaki Database adındaki bir area tanımlanmış controller'ın action'ında gerçekleştirildiğinden
@@ -65,14 +65,28 @@
                     <!-- aşağıdaki div ve ul class'ları üzerinden bu kısım menüde en sağ tarafta gelecektir -->
                     <div class="navbar-text">
                         <ul class="navbar-nav me-auto">
-                            <li class="nav-item"><!-- Menü elemanı. -->
-                                <a class="nav-link text-white" asp-area="Account" asp-controller="Users" asp-action="Register">Register</a>
-                                <!-- Tıklandığında Account area'sındaki Users controller'ının Register action'ına yönlendirecek Kayıt link'i. -->
-                            </li>
-                            <li class="nav-item"><!-- Menü elemanı. -->
-                                <a class="nav-link text-white" asp-area="Account" asp-controller="Users" asp-action="Login">Login</a>
-                                <!-- Tıklandığında Account area'sındaki Users controller'ının Login action'ına yönlendirecek Giriş link'i. -->
-                            </li>
+                            @if (User.Identity.IsAuthenticated) // Login aksiyonu sonucunda oluşan cookie'deki kullanıcı bilgilerine User objesi üzerinden ulaşılabilir,
+                                                                // eğer kullanıcı login olduysa yani cookie'si varsa
+                            {
+                                <li class="nav-item divusername"><!-- Menü elemanı, divusername class'ını wwwroot -> css -> site.css dosyasında oluşturduk -->
+                                    <span class="badge bg-info text-black">@User.Identity.Name</span><!-- badge: Bootstrap 5 Badge -->
+                                </li>
+                                <li class="nav-item"><!-- Menü elemanı. -->
+                                    <a class="nav-link text-info" asp-area="Account" asp-controller="Users" asp-action="Logout">Logout</a>
+                                    <!-- Tıklandığında Account area'sındaki Users controller'ının Logout action'ına yönlendirecek Çıkış link'i. -->
+                                </li>
+                            }
+                            else // eğer kullanıcı login olmadıysa yani cookie'si yoksa
+                            {
+                                <li class="nav-item"><!-- Menü elemanı. -->
+                                    <a class="nav-link text-info" asp-area="Account" asp-controller="Users" asp-action="Register">Register</a>
+                                    <!-- Tıklandığında Account area'sındaki Users controller'ının Register action'ına yönlendirecek Kayıt link'i. -->
+                                </li>
+                                <li class="nav-item"><!-- Menü elemanı. -->
+                                    <a class="nav-link text-info" asp-area="Account" asp-controller="Users" asp-action="Login">Login</a>
+                                    <!-- Tıklandığında Account area'sındaki Users controller'ının Login action'ına yönlendirecek Giriş link'i. -->
+                                </li>
+                            }
                         </ul>
                     </div>
 

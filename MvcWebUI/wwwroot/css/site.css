@@ -20,3 +20,17 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+
+
+.divsex {
+    padding-top: 7px;
+}
+
+.divusername {
+    padding-top: 6px;
+}
+
+.divusername span {
+    font-size: 16px;
+}

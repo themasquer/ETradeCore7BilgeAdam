@@ -12,22 +12,22 @@
 }
 
 <h1>@ViewData["Title"]</h1>
-
+<hr />
 <div class="row">
-    <div class="col-12">
+    <div class="offset-4 col-8">
         <form asp-action="Login">
 		@Html.AntiForgeryToken()
             <div asp-validation-summary="All" class="text-danger"></div>
             <div class="row mb-3">
                 <label asp-for="UserName" class="col-2 col-form-label"></label>
-				<div class="col-5">
+				<div class="col-4">
 					<input asp-for="UserName" class="form-control" />
 					<span asp-validation-for="UserName" class="text-danger"></span>
 				</div>
             </div>
             <div class="row mb-3">
                 <label asp-for="Password" class="col-2 col-form-label"></label>
-				<div class="col-5">
+				<div class="col-4">
 
 					<input asp-for="Password" class="form-control" type="password" />
 					@* bu input'un type attribute'u password yapılmalıdır ki şifre kapalı bir şekilde girilebilsin *@
@@ -36,7 +36,7 @@
 				</div>
             </div>
             <div class="row mb-3">
-				<div class="offset-2 col-5">
+				<div class="offset-2 col-4">
 					<input type="submit" value="Login" class="btn btn-outline-success" />
 				</div>
             </div>

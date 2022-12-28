@@ -1,8 +1,11 @@
 ﻿@{
     ViewData["Title"] = "Welcome";
+
+    string message = User.Identity.IsAuthenticated ? $"Welcome {User.Identity.Name}." : "Welcome.";
+    @* Razor'da bir kod bloğu içerisinde bir değişken atanıp aşağıda istenilen yerde bu değişkenin atanan verisi yazdırılabilir *@
 }
 
-<div class="text-center">
+<div class="mt-4 p-5 bg-secondary text-white rounded text-center"><!-- Bootstrap 5 Jumbotron -->
     <h1 class="display-4">E-Trade</h1>
-    <p>Welcome.</p>
+    <p>@message</p>
 </div>

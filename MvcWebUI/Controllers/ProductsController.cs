@@ -1,11 +1,15 @@
 ﻿using AppCore.Results.Bases;
 using Business.Models;
 using Business.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace MvcWebUI.Controllers
 {
+    [Authorize] // Authorize attribute'u controller üzerinde de yazılabilir, yazıldığında controller içerisindeki tüm action'larda geçerlidir,
+                // Controller üzerinde tanımlandığından sadece sisteme giriş yapmış yani authentication cookie'si olanlar
+                // bu controller'ın tüm action'larını çağırabilir.
     public class ProductsController : Controller // controller class isimleri mutlaka Controller ile bitmelidir, tarayıcının adresi veya link üzerinden çağrılırken ise Controller yazılmaz.
     {
         private readonly IProductService _productService; // controller'da ürünle ilgili işleri gerçekleştirebilmek için servis alanı tanımlanır ve constructor üzerinden enjekte edilir.
@@ -23,6 +27,9 @@ namespace MvcWebUI.Controllers
 
 
 
+        [AllowAnonymous] // Eğer Authorize attribute'u controller üzerinde yazıldıysa ve action çağrımı sisteme giriş yapmış veya yapmamış
+                         // tüm kullanıcılar için geçerli hale getirilmek isteniyorsa AllowAnonymous attribute'u kullanılarak Authorize ezilir,
+                         // dolayısıyla herkes bu action'ı çağırıp ürün listesini görebilir.
         public IActionResult Index() // tarayıcıda ~/Products/Index adresi girilerek veya herhangi bir view'da (örneğin Views -> Shared klasörü altındaki _Layout.cshtml)
                                      // bu adres için link oluşturularak çağrılabilir.
         {
@@ -38,6 +45,7 @@ namespace MvcWebUI.Controllers
 
 
 
+        // Authorize attribute'u yazılmadığı için controller'ın üzerindeki Authorize geçerli olacaktır.
         public IActionResult Details(int id) // örneğin tarayıcıda ~/Products/Details/1 adresi girilerek veya herhangi bir view'da (örneğin Views -> Products -> Index.cshtml)
                                              // bu adres için id parametresini de gönderen bir link oluşturularak çağrılabilir.
         {
@@ -86,6 +94,9 @@ namespace MvcWebUI.Controllers
 
         [HttpGet] // Bu aksiyonun HTTP GET yani sunucudan kaynak getirme işlemini yapacağını belirten Action Method Selector'ıdır.
                   // Yazmak zorunlu değildir çünkü yazılmazsa default HttpGet methodu action'larda kullanılır.
+        [Authorize(Roles = "Admin")] // controller üzerindeki Authorize sisteme giriş yapmış kullanıcılar içindi ancak biz bu action'ın
+                                     // sadece Admin rolündekiler için çağrılabilmesini istiyoruz, bu yüzden action üzerinde
+                                     // tekrar Authorize attribute'unu Admin rolüne göre tanımladık ve controller'dakini ezmiş olduk.
         public IActionResult Create() // tarayıcıda ~/Products/Create adresi girilerek veya herhangi bir view'da (örneğin Views -> Producs klasörü altındaki Index.cshtml)
                                       // bu adres için link oluşturularak çağrılabilir. Create view'ındaki form kullanıcıya dönülür ki kullanıcı veri girip sunucuya gönderebilsin.
                                       // Veritabanında yeni kayıt oluşturmak için kullanılır.
@@ -126,6 +137,9 @@ namespace MvcWebUI.Controllers
 
         [HttpPost] // post methodu ile veri gönderen HTML form'unun veya isteklerin (request) verilerinin sunucu tarafından alınmasını sağlar. post işlemleri için yazmak zorunludur.
         [ValidateAntiForgeryToken] // View'da AntiforgeryToken HTML Helper'ı ile oluşturulan token'ın validasyonunu sağlayan attribute'tur. 
+        [Authorize(Roles = "Admin")] // controller üzerindeki Authorize sisteme giriş yapmış kullanıcılar içindi ancak biz bu action'ın
+                                     // sadece Admin rolündekiler için çağrılabilmesini istiyoruz, bu yüzden action üzerinde
+                                     // tekrar Authorize attribute'unu Admin rolüne göre tanımladık ve controller'dakini ezmiş olduk.
         //public IActionResult Create(string Name, string Description, double UnitPrice, int StockAmount, DateTime? ExpirationDate, int? CategoryId, List<int> StoreIds)
         public IActionResult Create(ProductModel product)
         // form verileri name ile belirtilen input HTML elemanları üzerinden parametre olarak alınabildiği gibi bu özellikler ProductModel'in içerisinde olduğundan
@@ -164,6 +178,9 @@ namespace MvcWebUI.Controllers
 
 
 
+        [Authorize(Roles = "Admin")] // controller üzerindeki Authorize sisteme giriş yapmış kullanıcılar içindi ancak biz bu action'ın
+                                     // sadece Admin rolündekiler için çağrılabilmesini istiyoruz, bu yüzden action üzerinde
+                                     // tekrar Authorize attribute'unu Admin rolüne göre tanımladık ve controller'dakini ezmiş olduk.
         public IActionResult Edit(int id) // örneğin tarayıcıda ~/Products/Edit/1 adresi girilerek veya herhangi bir view'da (örneğin Views -> Products -> Index.cshtml)
                                           // bu adres için id parametresini de gönderen bir link oluşturularak çağrılabilir.
         {
@@ -202,6 +219,9 @@ namespace MvcWebUI.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")] // controller üzerindeki Authorize sisteme giriş yapmış kullanıcılar içindi ancak biz bu action'ın
+                                     // sadece Admin rolündekiler için çağrılabilmesini istiyoruz, bu yüzden action üzerinde
+                                     // tekrar Authorize attribute'unu Admin rolüne göre tanımladık ve controller'dakini ezmiş olduk.
         public IActionResult Edit(ProductModel product)
         {
 			if (ModelState.IsValid) // eğer kullanıcıdan parametre olarak gelen product model verilerinde data annotation'lar üzerinden bir validasyon hatası yoksa
@@ -234,6 +254,9 @@ namespace MvcWebUI.Controllers
 
 
 
+        [Authorize(Roles = "Admin")] // controller üzerindeki Authorize sisteme giriş yapmış kullanıcılar içindi ancak biz bu action'ın
+                                     // sadece Admin rolündekiler için çağrılabilmesini istiyoruz, bu yüzden action üzerinde
+                                     // tekrar Authorize attribute'unu Admin rolüne göre tanımladık ve controller'dakini ezmiş olduk.
         public IActionResult Delete(int id) // örneğin tarayıcıda ~/Products/Delete/1 adresi girilerek veya herhangi bir view'da (örneğin Views -> Products -> Index.cshtml)
                                             // bu adres için id parametresini de gönderen bir link oluşturularak çağrılabilir.
         {
@@ -256,6 +279,9 @@ namespace MvcWebUI.Controllers
                                // Bu yüzden action'ın adını DeleteConfirmed olarak değiştirdik. Ancak Delete view'ı üzerinden form ile id verisini
                                // bu action'a Delete route'u üzerinden taşıyabilmek için ActionName selector'ı ile action çağrımını Delete olarak değiştirdik.
                                // Eğer ActionName kullanmasaydık bu action'ı DeleteConfirmed olarak çağırmamız gerekecekti.
+        [Authorize(Roles = "Admin")] // controller üzerindeki Authorize sisteme giriş yapmış kullanıcılar içindi ancak biz bu action'ın
+                                     // sadece Admin rolündekiler için çağrılabilmesini istiyoruz, bu yüzden action üzerinde
+                                     // tekrar Authorize attribute'unu Admin rolüne göre tanımladık ve controller'dakini ezmiş olduk.
         public IActionResult DeleteConfirmed(int id)
         {
             Result result = _productService.Delete(id); // view'dan parametre olarak gelen id üzerinden ürün kaydını siliyoruz.

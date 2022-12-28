@@ -14,22 +14,29 @@ namespace MvcWebUI.Areas.Account.Controllers
     {
         // Add service injections here
         private readonly IAccountService _accountService;
+        private readonly ICountryService _countryService;
+        private readonly ICityService _cityService;
 
-        public UsersController(IAccountService accountService)
-        {
-            _accountService = accountService;
-        }
+		public UsersController(IAccountService accountService, ICountryService countryService, ICityService cityService)
+		{
+			_accountService = accountService;
+			_countryService = countryService;
+			_cityService = cityService;
+		}
 
-        // GET: Account/Users/Register
-        public IActionResult Register()
+		// GET: Account/Users/Register
+		public IActionResult Register() // kayıt
         {
+            ViewBag.Countries = new SelectList(_countryService.GetList(), "Id", "Name");
+            // sadece ülke listesine göre bir SelectList oluşturuyoruz, şehir listesi ülke drop down list'inde yapılan ülke seçimine göre dolacak
+
             return View();
         }
 
         // POST: Account/Users/Register
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Register(AccountRegisterModel model)
+        public IActionResult Register(AccountRegisterModel model) // kayıt
         {
             if (ModelState.IsValid)
             {
@@ -39,11 +46,21 @@ namespace MvcWebUI.Areas.Account.Controllers
                                                                                  // anonim bir objede area özelliğini "" atayarak yönlendirme yapmalıyız
                 ModelState.AddModelError("", result.Message);
             }
-            return View(model);
+
+			ViewBag.Countries = new SelectList(_countryService.GetList(), "Id", "Name", model.UserDetail.CountryId);
+            // kullanıcının hatalı veri girişi yapması durumunda seçmiş olduğu ülke id'ye göre tekrar SelectList üzerinden bir drop down list oluşturuyoruz
+
+            ViewBag.Cities = new SelectList(_cityService.GetList(model.UserDetail.CountryId ?? 0), "Id", "Name", model.UserDetail.CityId);
+			// kullanıcının hatalı veri girişi yapması durumunda seçmiş olduğu ülke id'ye göre şehirleri tekrar doldurup
+			// seçmiş olduğu şehir id'nin de drop down list'te seçili gelmesini sağlayan bir SelectList oluşturuyoruz,
+			// eğer kullanıcı ülke seçimi yapmadıysa model.UserDetail.CountryId null geleceği için ?? operatörü ile null'sa 0 kullan diyerek
+			// parametreyi GetList methoduna gönderiyoruz
+
+			return View(model);
         }
 
         // GET: Account/Users/Login
-        public IActionResult Login()
+        public IActionResult Login() // giriş
         {
             return View();
         }
@@ -51,13 +68,18 @@ namespace MvcWebUI.Areas.Account.Controllers
         // POST: Account/Users/Login
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(AccountLoginModel model)
+        public async Task<IActionResult> Login(AccountLoginModel model) // giriş
         {
             if (ModelState.IsValid) 
             {
-                UserModel userResult = new UserModel(); // UserModel tipindeki userResult'ı burada tanımlayıp new'liyoruz ki Login methodu  
-                                                        // başarılı olursa userResult referans tip olduğu için Login methodu içerisinde atansın 
-                                                        // ve bu methodda kullanabilelim
+                UserModel userResult = new UserModel()
+                {
+                    Role = new RoleModel()
+                }; 
+                // UserModel tipindeki userResult'ı burada tanımlayıp new'liyoruz ki Login methodu  
+                // başarılı olursa userResult referans tip olduğu için Login methodu içerisinde atansın 
+                // ve bu methodda kullanabilelim, userResult içerisindeki Role referans özelliğini de new'liyoruz ki
+                // methodda rolü de doldurabilelim
 
                 var result = _accountService.Login(model, userResult); // modeldeki kullanıcı adı ve şifreyi aktiflik durumuyla birlikte kontrol ediyoruz
                 if (result.IsSuccessful) // eğer modeldeki kullanıcı adı ve şifreye sahip aktif kullanıcı varsa
@@ -73,16 +95,16 @@ namespace MvcWebUI.Areas.Account.Controllers
                                                                   // kullanmak daha uygundur, ikinci parametre ise bu tipe atanmak istenen değerdir
                         new Claim(ClaimTypes.Name, userResult.UserName),
 
-                        new Claim(ClaimTypes.Role, userResult.RoleNameDisplay)
+                        new Claim(ClaimTypes.Role, userResult.Role.Name)
                     };
 
-                    // oluşturduğumuz claim listesi üzerinden Cookie Authentication default'larını kullanarak bir identity (kimlik) oluşturuyoruz
-                    var identity = new ClaimsIdentity(claims,CookieAuthenticationDefaults.AuthenticationScheme);
+                    // oluşturduğumuz claim listesi üzerinden cookie authentication default'ları ile bir identity (kimlik) oluşturuyoruz
+                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
                     // oluşturduğumuz kimlik üzerinden de MVC'de authentication (kimlik doğrulama) için kullanacağımız bir principal oluşturuyoruz 
                     var principal = new ClaimsPrincipal(identity);
 
-                    // son olarak oluşturduğumuz principal üzerinden MVC'de kimlik giriş işlemini tamamlıyoruz,
+                    // son olarak oluşturduğumuz principal üzerinden cookie authentication default'ları ile MVC'de kimlik giriş işlemini tamamlıyoruz,
                     // SignInAsync methodu bir asenkron method olduğu için başına await (asynchronous wait) yazmalıyız
                     // ve methodun dönüş tipinin başına async yazarak dönüş tipini de bir Task tipi içerisinde tip olarak (IActionResult) tanımlamalıyız
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
@@ -93,7 +115,18 @@ namespace MvcWebUI.Areas.Account.Controllers
                 }
                 ModelState.AddModelError("", result.Message);
             }
-            return View(model);
+            return View(); // view'a modeli göndermedik çünkü kullanıcının herhangi bir hatalı girişi durumunda sıfırdan sayfada kullanıcı adı ve şifresini girmesini istedik
+        }
+
+        public async Task<IActionResult> Logout() // çıkış
+        {
+            await HttpContext.SignOutAsync(); // Login aksiyonu ile oluşan çerezi (cookie) kaldırır
+            return RedirectToAction("Index", "Home", new { area = "" });
+        }
+
+        public IActionResult AccessDenied() // kullanıcı giriş yaptı ancak yetkisi olmayan bir controller action'ını çağırdı
+        {
+            return View("_Error", "Access is denied to this page!");
         }
     }
 }
