@@ -1,2 +1,0 @@
-Register ve Login view'lerinde client-side validation kullanýmý
-Stores Index view'inde silme için AlertifyJS ve modal kullanýmlarý 

@@ -8,7 +8,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{447AAB13-D41F-4C6B-8A41-BFFCCC9CDD09}"
 	ProjectSection(SolutionItems) = preProject
 		ReadMe.txt = ReadMe.txt
-		TODOs.txt = TODOs.txt
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppCore", "AppCore\AppCore.csproj", "{06A29419-2314-44D7-8B87-2775DA37545E}"

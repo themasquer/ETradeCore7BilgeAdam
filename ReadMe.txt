@@ -84,37 +84,39 @@ Konu Anlatýmlý Proje Geliþtirme Aþamalarý:
 31) Business -> Services -> StoreService -> Add
 32) Business -> Services -> StoreService -> Update
 33) Business -> Services -> StoreService -> Delete
-34) MvcWebUI -> Controllers -> Stores -> MVC Controller Entity Framework Scaffolding
+34) MvcWebUI -> Controllers -> Stores -> Index, Details, Create, Edit ve Delete action'larý
+35) MvcWebUI -> Views -> Stores -> Index, _Details ve _CreateEdit view'larý
 
 Kullanýcý Yönetimi: Ýstenirse kullanýcý yönetimi için Microsoft'un Identity Framework kütüphanesi kullanýlabilir.
-35) DataAccess -> Entities -> User, UserDetail, Country, City ve Role entity'leri
-36) DataAccess -> Contexts -> ETradeContext -> Users, UserDetails, Countries, Cities ve Roles DbSet'leri
-37) DataAccess -> Repositories -> UserRepo (MvcWebUI -> Program.cs -> IoC Container)
-38) DataAccess -> Repositories -> RoleRepo (MvcWebUI -> Program.cs -> IoC Container)
-39) DataAccess -> Repositories -> CountryRepo (MvcWebUI -> Program.cs -> IoC Container)
-40) DataAccess -> Repositories -> CityRepo (MvcWebUI -> Program.cs -> IoC Container)
-41) DataAccess -> Enums -> Roles
-42) DataAccess -> Enums -> Sex
-43) Business -> Models -> UserModel
-44) Business -> Models -> UserDetailModel
-45) Business -> Models -> CountryModel
-46) Business -> Models -> CityModel
-47) Business -> Models -> AccountLoginModel
-48) Business -> Services -> UserService -> Query (MvcWebUI -> Program.cs -> IoC Container)
-49) Business -> Services -> AccountService -> Login (MvcWebUI -> Program.cs -> IoC Container)
-50) Business -> Models -> AccountRegisterModel
-51) Business -> Services -> UserService -> Add
-52) Business -> Services -> AccountService -> Register
-53) Business -> Services -> CountryService -> Query (MvcWebUI -> Program.cs -> IoC Container)
-54) Business -> Services -> CountryService -> GetList
-55) Business -> Services -> CountryService -> GetItem (id parametreli)
-56) Business -> Services -> CityService -> Query (MvcWebUI -> Program.cs -> IoC Container)
-57) Business -> Services -> CityService -> GetList (countryId parametreli)
-58) Business -> Services -> CityService -> GetList (parametresiz)
-59) Business -> Services -> CityService -> GetItem (id parametreli)
-60) MvcWebUI -> Controllers -> CitiesController -> GetCities (countryId parametreli)
-61) MvcWebUI -> Areas -> Accounts -> Controllers -> Home -> Register Action'larý ve View'ý
-62) MvcWebUI -> Areas -> Accounts -> Controllers -> Home -> Login Action'larý ve View'ý (MvcWebUI -> Program.cs -> Authentication)
-63) MvcWebUI -> Views -> Shared -> _Layout.cshtml -> User üzerinden giriþ yapan kullanýcýya göre menü özelleþtirmeleri
-64) MvcWebUI -> Views -> Home -> Welcome.cshtml -> User üzerinden kullanýcý adý gösterimi
-65) MvcWebUI -> Controllers -> Categories, Products ve Stores -> Authorize attribute'larý
+36) DataAccess -> Entities -> User, UserDetail, Country, City ve Role entity'leri
+37) DataAccess -> Contexts -> ETradeContext -> Users, UserDetails, Countries, Cities ve Roles DbSet'leri
+38) DataAccess -> Repositories -> UserRepo (MvcWebUI -> Program.cs -> IoC Container)
+39) DataAccess -> Repositories -> RoleRepo (MvcWebUI -> Program.cs -> IoC Container)
+40) DataAccess -> Repositories -> CountryRepo (MvcWebUI -> Program.cs -> IoC Container)
+41) DataAccess -> Repositories -> CityRepo (MvcWebUI -> Program.cs -> IoC Container)
+42) DataAccess -> Enums -> Roles
+43) DataAccess -> Enums -> Sex
+44) Business -> Models -> UserModel
+45) Business -> Models -> UserDetailModel
+46) Business -> Models -> CountryModel
+47) Business -> Models -> CityModel
+48) Business -> Models -> AccountLoginModel
+49) Business -> Services -> UserService -> Query (MvcWebUI -> Program.cs -> IoC Container)
+50) Business -> Services -> AccountService -> Login (MvcWebUI -> Program.cs -> IoC Container)
+51) Business -> Models -> AccountRegisterModel
+52) Business -> Services -> UserService -> Add
+53) Business -> Services -> AccountService -> Register
+54) Business -> Services -> CountryService -> Query (MvcWebUI -> Program.cs -> IoC Container)
+55) Business -> Services -> CountryService -> GetList
+56) Business -> Services -> CountryService -> GetItem (id parametreli)
+57) Business -> Services -> CityService -> Query (MvcWebUI -> Program.cs -> IoC Container)
+58) Business -> Services -> CityService -> GetList (countryId parametreli)
+59) Business -> Services -> CityService -> GetList (parametresiz)
+60) Business -> Services -> CityService -> GetItem (id parametreli)
+61) MvcWebUI -> Controllers -> CitiesController -> GetCities (countryId parametreli)
+62) MvcWebUI -> Areas -> Accounts -> Controllers -> Home -> Register Action'larý ve View'ý
+63) MvcWebUI -> Areas -> Accounts -> Controllers -> Home -> Login Action'larý ve View'ý (MvcWebUI -> Program.cs -> Authentication)
+64) MvcWebUI -> Views -> Shared -> _Layout.cshtml -> User üzerinden giriþ yapan kullanýcýya göre menü link'lerinin gösterimi
+65) MvcWebUI -> Views -> Home -> Welcome.cshtml -> User üzerinden kullanýcý adý gösterimi
+66) MvcWebUI -> Controllers -> Categories, Products ve Stores -> Authorize attribute'larý
+67) MvcWebUI -> Views -> Categories ve Products -> Index.cshtml ve Details.cshtml -> User üzerinden giriþ yapan kullanýcýya göre link'lerin gösterimi

@@ -31,16 +31,18 @@ namespace MvcWebUI.Controllers
             StoreModel store = _storeService.Query().SingleOrDefault(s => s.Id == id); // Add get item service logic here
             if (store == null)
             {
-                return View("_Error", "Store not found!");
+                return NotFound("Store not found!"); // eğer mağaza bulunamazsa NotFound dönüyoruz ki mesajını Index view'ındaki
+                                                     // modal içerisine yazdırabilelim
             }
-            return View(store);
+            return PartialView("_Details", store); // mağazayı bir partial view üzerinden dönüyoruz ki Index view'ındaki modal içerisine doldurabilelim
         }
 
         // GET: Stores/Create
         public IActionResult Create()
         {
             // Add get related items service logic here to set ViewData if necessary and update null parameter in SelectList with these items
-            return View();
+            return PartialView("_CreateEdit"); // yeni mağaza form'unu bir partial view üzerinden dönüyoruz ki Index view'ındaki
+                                               // modal içerisine doldurabilelim
         }
 
         // POST: Stores/Create
@@ -55,11 +57,13 @@ namespace MvcWebUI.Controllers
                 // Add insert service logic here
                 var result = _storeService.Add(store);
                 if (result.IsSuccessful)
-                    return RedirectToAction(nameof(Index));
+                    return Ok(); // işlem başarılı olduğundan herhangi bir mesaj içermeyen Ok sonucunu dönüyoruz ki
+                                 // Index.cshtml'deki script üzerinden Index action'ına yönlendirebilelim
                 ModelState.AddModelError("", result.Message);
             }
             // Add get related items service logic here to set ViewData if necessary and update null parameter in SelectList with these items
-            return View(store);
+            return PartialView("_CreateEdit", store); // yeni mağaza form'unu kullanıcı tarafından gönderilen store ile birlikte
+                                                      // bir partial view üzerinden dönüyoruz ki Index view'ındaki modal içerisine doldurabilelim
         }
 
         // GET: Stores/Edit/5
@@ -68,10 +72,12 @@ namespace MvcWebUI.Controllers
             StoreModel store = _storeService.Query().SingleOrDefault(s => s.Id == id); // Add get item service logic here
             if (store == null)
             {
-                return View("_Error", "Store not found!");
+                return NotFound("Store not found!"); // eğer mağaza bulunamazsa NotFound dönüyoruz ki mesajını Index view'ındaki
+                                                     // modal içerisine yazdırabilelim
             }
             // Add get related items service logic here to set ViewData if necessary and update null parameter in SelectList with these items
-            return View(store);
+            return PartialView("_CreateEdit", store); // mağaza düzenleme form'unu veritabanından çektiğimiz store ile birlikte
+                                                      // bir partial view üzerinden dönüyoruz ki Index view'ındaki modal içerisine doldurabilelim
         }
 
         // POST: Stores/Edit
@@ -86,33 +92,24 @@ namespace MvcWebUI.Controllers
                 // Add update service logic here
                 var result = _storeService.Update(store);
                 if (result.IsSuccessful)
-                    return RedirectToAction(nameof(Index));
+                    return Ok(); // işlem başarılı olduğundan herhangi bir mesaj içermeyen Ok sonucunu dönüyoruz ki
+                                 // Index.cshtml'deki script üzerinden Index action'ına yönlendirebilelim
                 ModelState.AddModelError("", result.Message);
             }
             // Add get related items service logic here to set ViewData if necessary and update null parameter in SelectList with these items
-            return View(store);
+            return PartialView("_CreateEdit", store); // mağaza düzenleme form'unu kullanıcı tarafından gönderilen store ile birlikte
+                                                      // bir partial view üzerinden dönüyoruz ki Index view'ındaki modal içerisine doldurabilelim
         }
 
         // GET: Stores/Delete/5
-        public IActionResult Delete(int id)
+        public IActionResult Delete(int id) // Index view'ında Delete link'i için AlertifyJS üzerinden bir konfirmasyon pop up'ı göstereceğiz
+                                            // ve bu pop up üzerinden silme işlemi onaylanırsa bu get action'ına mağazanın id'sini
+                                            // göndererek silinmesini sağlayacağız
         {
-            StoreModel store = _storeService.Query().SingleOrDefault(s => s.Id == id); // Add get item service logic here
-            if (store == null)
-            {
-                return View("_Error", "Store not found!");
-            }
-            return View(store);
-        }
-
-        // POST: Stores/Delete
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
-        {
-            // Add delete service logic here
-            var result = _storeService.Delete(id);
-            TempData["Message"] = result.Message;
-            return RedirectToAction(nameof(Index));
-        }
+			// Add delete service logic here
+			var result = _storeService.Delete(id);
+			TempData["Message"] = result.Message;
+			return RedirectToAction(nameof(Index));
+		}
 	}
 }
