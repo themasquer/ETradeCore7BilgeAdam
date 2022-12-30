@@ -73,7 +73,7 @@
                 <button type="button" class="btn-close closemodalbutton" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <!-- Dinamik olarak sunucudan dönen partial view'lar' üzerinden doldurulacak -->
+                <!-- Dinamik olarak sunucudan dönen partial view'lar üzerinden doldurulacak -->
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary closemodalbutton">Close</button>
@@ -146,7 +146,7 @@
             var route = $("form").attr("action"); // yeni ve düzenle form'larının içlerindeki veriyi submit edeceği action attribute'u
                                                   // üzerinden controller/action route'unu alıyoruz
             var data = $("form").serialize(); // form'lardaki alanlar üzerinden girilen verileri serialize ederek bu alanlar üzerinden
-                                              // bir query string oluşturuyoruz ve data'ya atıyoruz (örnek: Name=Teknosa&IsVirtual=false)
+                                              // bir string oluşturuyoruz ve data'ya atıyoruz (örnek: Name=Teknosa&IsVirtual=false)
             $.post(route, data, function() { // aldığımız route ve data üzerinden sunucuya bir post isteğinde bulunuyoruz
 
             })
@@ -157,7 +157,7 @@
                 else // eğer sunucudan dönen partialView yanıtı boş değilse bu durumda validasyon hatası var demektir
                     $(".modal .modal-body").html(partialView); // işlem başarısız olduğu için partial view'ı modal içerisine dolduruyoruz
             })
-            .fail(function (response) { // eğer sunucudan başarısız sonucu dönerse hata mesajını modal class'lı div içerisindeki 
+            .fail(function () { // eğer sunucudan başarısız sonucu dönerse hata mesajını modal class'lı div içerisindeki 
                                         // modal-body class'lı div'in içerisine yazdırıyoruz
                 $(".modal .modal-body").html('<span class="text-danger">An error occured!</span>');
             });
