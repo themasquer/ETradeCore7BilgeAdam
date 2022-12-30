@@ -121,7 +121,7 @@
                 event.preventDefault(); // link'in default yönlendirme event'ini iptal ediyoruz
                 var route = $(this).data("target"); // a tag'inin data-target attribute'u üzerinden get isteğinde bulunacağımız
                                                     // controller/action/id route'unu alıyoruz
-                $.get(route, function (partialView) { // bu route üzerinden sunucuya bir get isteğinde bulunuyoruz
+                $.get(route, function () { // bu route üzerinden sunucuya bir get isteğinde bulunuyoruz
 
                 })
                 .done(function (partialView) { // eğer sunucudan başarılı sonucu dönerse
