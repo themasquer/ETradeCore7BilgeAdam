@@ -1,53 +1,53 @@
-MvcWebUI (ASP.NET Core Web App Model View Controller), Business (Class Library), DataAccess (Class Library) ve AppCore (Class Library) projeleri oluşturulduktan sonra 
+MvcWebUI (ASP.NET Core Web App Model View Controller), Business (Class Library), DataAccess (Class Library) ve AppCore (Class Library) projeleri oluÅŸturulduktan sonra 
 solution build edilir ve DataAccess projesine AppCore, Business projesine AppCore ve DataAccess, MvcWebUI projesine ise Business, DataAccess ve AppCore
 projeleri referans olarak eklenir:
 
-1) İster solution altında AppCore adında yeni bir proje oluşturulur, istenirse de AppCore projesi dışarıdan solution'a eklenebilir.
+1) Ä°ster solution altÄ±nda AppCore adÄ±nda yeni bir proje oluÅŸturulur, istenirse de AppCore projesi dÄ±ÅŸarÄ±dan solution'a eklenebilir.
 
-2) DataAccess katmanında AppCore katmanındaki RecordBase'den miras alan Entity'ler oluşturulur.
+2) DataAccess katmanÄ±nda AppCore katmanÄ±ndaki RecordBase'den miras alan Entity'ler oluÅŸturulur.
 
-3) AppCore katmanına Microsoft.EntityFrameworkCore.SqlServer ile DataAccess katmanına Microsoft.EntityFrameworkCore.Tools paketleri NuGet'ten indirilir.
-.NET versiyonu hangisi ise NuGet'ten o versiyon numarası ile başlayan paketlerin son versiyonları indirilmelidir.
+3) AppCore katmanÄ±na Microsoft.EntityFrameworkCore.SqlServer ile DataAccess katmanÄ±na Microsoft.EntityFrameworkCore.Tools paketleri NuGet'ten indirilir.
+.NET versiyonu hangisi ise NuGet'ten o versiyon numarasÄ± ile baÅŸlayan paketlerin son versiyonlarÄ± indirilmelidir.
 
-4) DataAccess katmanında DbContext'ten türeyen Context ve içerisindeki DbSet'ler ile connection string bilgisini de içeren DbContextOptions tipindeki objenin 
-Context'e constructor üzerinden enjekte edilmesini sağlayacak parametreli constructor oluşturulur, daha sonra MvcWebUI katmanında Program.cs'teki
-IoC Container'da DbContext için bağımlılık yönetimi gerçekleştirilir.
+4) DataAccess katmanÄ±nda DbContext'ten tÃ¼reyen Context ve iÃ§erisindeki DbSet'ler ile connection string bilgisini de iÃ§eren DbContextOptions tipindeki objenin 
+Context'e constructor Ã¼zerinden enjekte edilmesini saÄŸlayacak parametreli constructor oluÅŸturulur, daha sonra MvcWebUI katmanÄ±nda Program.cs'teki
+IoC Container'da DbContext iÃ§in baÄŸÄ±mlÄ±lÄ±k yÃ¶netimi gerÃ§ekleÅŸtirilir.
 
-5) MvcWebUI katmanındaki appsettings.json ile eğer istenirse appsettings.Development.json içerisine connection string 
+5) MvcWebUI katmanÄ±ndaki appsettings.json ile eÄŸer istenirse appsettings.Development.json iÃ§erisine connection string 
 server=.\\SQLEXPRESS;database=BA_ETradeCore7;user id=sa;password=sa;multipleactiveresultsets=true;trustservercertificate=true; 
-formatta yazılır. appsettings.json dosyası Properties klasöründeki launchSettings.json dosyasında konfigüre edilen production (canlı) profilinde, 
-appsettings.Development.json dosyası ise development (geliştirme) profilinde proje çalıştırıldığında kullanılacaktır.
-Ayrıca launchSettings.json dosyasına view'larda değişiklik yapıldığında projenin tekrar başlatılma gerekliliğini ortadan kaldırmak için
-"ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" satırının eklenmesi
-ve NuGet üzerinden Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation kütüphanesinin MvcWebUI projesine indirilmesi faydalı olacaktır.
+formatta yazÄ±lÄ±r. appsettings.json dosyasÄ± Properties klasÃ¶rÃ¼ndeki launchSettings.json dosyasÄ±nda konfigÃ¼re edilen production (canlÄ±) profilinde, 
+appsettings.Development.json dosyasÄ± ise development (geliÅŸtirme) profilinde proje Ã§alÄ±ÅŸtÄ±rÄ±ldÄ±ÄŸÄ±nda kullanÄ±lacaktÄ±r.
+AyrÄ±ca launchSettings.json dosyasÄ±na view'larda deÄŸiÅŸiklik yapÄ±ldÄ±ÄŸÄ±nda projenin tekrar baÅŸlatÄ±lma gerekliliÄŸini ortadan kaldÄ±rmak iÃ§in
+"ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" satÄ±rÄ±nÄ±n eklenmesi
+ve NuGet Ã¼zerinden Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation kÃ¼tÃ¼phanesinin MvcWebUI projesine indirilmesi faydalÄ± olacaktÄ±r.
 
-6) MvcWebUI katmanına Microsoft.EntityFrameworkCore.Design paketi NuGet'ten indirilerek MvcWebUI projesi Startup Project yapılır. 
-Tools -> NuGet Package Manager -> Package Manager Console açılır, Default project DataAccess seçilir 
-ve önce örneğin add-migration v1 daha sonra update-database komutları çalıştırılır.
-Entity'ler veya DbSet'ler üzerinde yapılan her değişiklik için örneğin add-migration v2 daha sonra da update-database çalıştırılmalıdır.
+6) MvcWebUI katmanÄ±na Microsoft.EntityFrameworkCore.Design paketi NuGet'ten indirilerek MvcWebUI projesi Startup Project yapÄ±lÄ±r. 
+Tools -> NuGet Package Manager -> Package Manager Console aÃ§Ä±lÄ±r, Default project DataAccess seÃ§ilir 
+ve Ã¶nce Ã¶rneÄŸin add-migration v1 daha sonra update-database komutlarÄ± Ã§alÄ±ÅŸtÄ±rÄ±lÄ±r.
+Entity'ler veya DbSet'ler Ã¼zerinde yapÄ±lan her deÄŸiÅŸiklik iÃ§in Ã¶rneÄŸin add-migration v2 daha sonra da update-database Ã§alÄ±ÅŸtÄ±rÄ±lmalÄ±dÄ±r.
 
-7) DataAccess katmanında entity'ler üzerinden AppCore'daki RepoBase'den miras alan abstract (soyut) base repository'ler ile
-bu base repository'lerden miras alan concrete (somut) repository'ler oluşturulur ve MvcWebUI katmanında Program.cs'teki IoC Container'da bağımlılıkları yönetilir.
+7) DataAccess katmanÄ±nda entity'ler Ã¼zerinden AppCore'daki RepoBase'den miras alan abstract (soyut) base repository'ler ile
+bu base repository'lerden miras alan concrete (somut) repository'ler oluÅŸturulur ve MvcWebUI katmanÄ±nda Program.cs'teki IoC Container'da baÄŸÄ±mlÄ±lÄ±klarÄ± yÃ¶netilir.
 
-8) Business katmanında entity'ler üzerinden model class'ları AppCore katmanındaki RecordBase'den miras alacak şekilde oluşturulur,
-eğer istenirse MvcWebUI katmanında view'larda kullanılmak üzere formatlama, ilişkili referans özellikleri kullanma, vb. için yeni özellikler eklenebilir.
+8) Business katmanÄ±nda entity'ler Ã¼zerinden model class'larÄ± AppCore katmanÄ±ndaki RecordBase'den miras alacak ÅŸekilde oluÅŸturulur,
+eÄŸer istenirse MvcWebUI katmanÄ±nda view'larda kullanÄ±lmak Ã¼zere formatlama, iliÅŸkili referans Ã¶zellikleri kullanma, vb. iÃ§in yeni Ã¶zellikler eklenebilir.
 
-9) Business katmanında model'ler üzerinden entity <-> model dönüşümlerini gerçekleştirip DataAccess katmanındaki repository'ler üzerinden
-veritabanı işlemleri gerçekleştirmek için AppCore'daki IService'i implemente eden interface'ler ile bu interface'leri implemente
-eden concrete (somut) service'ler oluşturulur ve MvcWebUI katmanında Program.cs'teki IoC Container'da bağımlılıkları yönetilir.
+9) Business katmanÄ±nda model'ler Ã¼zerinden entity <-> model dÃ¶nÃ¼ÅŸÃ¼mlerini gerÃ§ekleÅŸtirip DataAccess katmanÄ±ndaki repository'ler Ã¼zerinden
+veritabanÄ± iÅŸlemleri gerÃ§ekleÅŸtirmek iÃ§in AppCore'daki IService'i implemente eden interface'ler ile bu interface'leri implemente
+eden concrete (somut) service'ler oluÅŸturulur ve MvcWebUI katmanÄ±nda Program.cs'teki IoC Container'da baÄŸÄ±mlÄ±lÄ±klarÄ± yÃ¶netilir.
 
-10) MvcWebUI katmanında yönetilecek model için controller ile ilgili action ve view'ları oluşturularak ilgili service constructor üzerinden enjekte edilir
-ve controller action'larında methodları kullanılarak model objeleri üzerinden işlemler (örneğin CRUD) gerçekleştirilir.
+10) MvcWebUI katmanÄ±nda yÃ¶netilecek model iÃ§in controller ile ilgili action ve view'larÄ± oluÅŸturularak ilgili service constructor Ã¼zerinden enjekte edilir
+ve controller action'larÄ±nda methodlarÄ± kullanÄ±larak model objeleri Ã¼zerinden iÅŸlemler (Ã¶rneÄŸin CRUD) gerÃ§ekleÅŸtirilir.
 
 View <-> Controller (Action) <-> Service (Model) <-> Repository (Entity) <-> DbContext (Entity) <-> Database
 
-11) MvcWebUI katmanındaki Views -> Shared klasörü altındaki projede tüm oluşturulan view'ların bir şablon içerisinde gösterilmesini
-sağlayan _Layout.cshtml view'ı içerisinde controller ve action'lar üzerinden, örneğin menüye link'ler eklenir.
+11) MvcWebUI katmanÄ±ndaki Views -> Shared klasÃ¶rÃ¼ altÄ±ndaki projede tÃ¼m oluÅŸturulan view'larÄ±n bir ÅŸablon iÃ§erisinde gÃ¶sterilmesini
+saÄŸlayan _Layout.cshtml view'Ä± iÃ§erisinde controller ve action'lar Ã¼zerinden, Ã¶rneÄŸin menÃ¼ye link'ler eklenir.
 
-12) Eğer istenirse veritabanındaki tüm verilerin sıfırdan oluşturulmasını sağlayan, örneğin MvcWebUI katmanında Areas klasöründeki Database area'sı içerisinde,
-bir controller ve aksiyonu yazılabilir.
+12) EÄŸer istenirse veritabanÄ±ndaki tÃ¼m verilerin sÄ±fÄ±rdan oluÅŸturulmasÄ±nÄ± saÄŸlayan, Ã¶rneÄŸin MvcWebUI katmanÄ±nda Areas klasÃ¶rÃ¼ndeki Database area'sÄ± iÃ§erisinde,
+bir controller ve aksiyonu yazÄ±labilir.
 
-Konu Anlatımlı Proje Geliştirme Aşamaları:
+Konu AnlatÄ±mlÄ± Proje GeliÅŸtirme AÅŸamalarÄ±:
 1) DataAccess -> Entities -> Product ve Category entity'leri
 2) DataAccess -> Contexts -> ETradeContext -> Products ve Categories DbSet'leri
 (MvcWebUI -> Program.cs -> IoC Container ile MvcWebUI -> appsettings.json veya istenirse appsetting.Development.json -> ConnectionStrings)
@@ -84,10 +84,10 @@ Konu Anlatımlı Proje Geliştirme Aşamaları:
 31) Business -> Services -> StoreService -> Add
 32) Business -> Services -> StoreService -> Update
 33) Business -> Services -> StoreService -> Delete
-34) MvcWebUI -> Controllers -> Stores -> Index, Details, Create, Edit ve Delete action'ları
-35) MvcWebUI -> Views -> Stores -> Index, _Details ve _CreateEdit view'ları
+34) MvcWebUI -> Controllers -> Stores -> Index, Details, Create, Edit ve Delete action'larÄ±
+35) MvcWebUI -> Views -> Stores -> Index, _Details ve _CreateEdit view'larÄ±
 
-Kullanıcı Yönetimi: İstenirse kullanıcı yönetimi için Microsoft'un Identity Framework kütüphanesi kullanılabilir.
+KullanÄ±cÄ± YÃ¶netimi: Ä°stenirse kullanÄ±cÄ± yÃ¶netimi iÃ§in Microsoft'un Identity Framework kÃ¼tÃ¼phanesi kullanÄ±labilir.
 36) DataAccess -> Entities -> User, UserDetail, Country, City ve Role entity'leri
 37) DataAccess -> Contexts -> ETradeContext -> Users, UserDetails, Countries, Cities ve Roles DbSet'leri
 38) DataAccess -> Repositories -> UserRepo (MvcWebUI -> Program.cs -> IoC Container)
@@ -114,9 +114,9 @@ Kullanıcı Yönetimi: İstenirse kullanıcı yönetimi için Microsoft'un Identity Fram
 59) Business -> Services -> CityService -> GetList (parametresiz)
 60) Business -> Services -> CityService -> GetItem (id parametreli)
 61) MvcWebUI -> Controllers -> CitiesController -> GetCities (countryId parametreli)
-62) MvcWebUI -> Areas -> Accounts -> Controllers -> Home -> Register Action'ları ve View'ı
-63) MvcWebUI -> Areas -> Accounts -> Controllers -> Home -> Login Action'ları ve View'ı (MvcWebUI -> Program.cs -> Authentication)
-64) MvcWebUI -> Views -> Shared -> _Layout.cshtml -> User üzerinden giriş yapan kullanıcıya göre menü link'lerinin gösterimi
-65) MvcWebUI -> Views -> Home -> Welcome.cshtml -> User üzerinden kullanıcı adı gösterimi
-66) MvcWebUI -> Controllers -> Categories, Products ve Stores -> Authorize attribute'ları
-67) MvcWebUI -> Views -> Categories ve Products -> Index.cshtml ve Details.cshtml -> User üzerinden giriş yapan kullanıcıya göre link'lerin gösterimi
+62) MvcWebUI -> Areas -> Accounts -> Controllers -> Home -> Register Action'larÄ± ve View'Ä±
+63) MvcWebUI -> Areas -> Accounts -> Controllers -> Home -> Login Action'larÄ± ve View'Ä± (MvcWebUI -> Program.cs -> Authentication)
+64) MvcWebUI -> Views -> Shared -> _Layout.cshtml -> User Ã¼zerinden giriÅŸ yapan kullanÄ±cÄ±ya gÃ¶re menÃ¼ link'lerinin gÃ¶sterimi
+65) MvcWebUI -> Views -> Home -> Welcome.cshtml -> User Ã¼zerinden kullanÄ±cÄ± adÄ± gÃ¶sterimi
+66) MvcWebUI -> Controllers -> Categories, Products ve Stores -> Authorize attribute'larÄ±
+67) MvcWebUI -> Views -> Categories ve Products -> Index.cshtml ve Details.cshtml -> User Ã¼zerinden giriÅŸ yapan kullanÄ±cÄ±ya gÃ¶re link'lerin gÃ¶sterimi
