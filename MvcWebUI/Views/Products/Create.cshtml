@@ -2,10 +2,13 @@
 @* Bu view'da veriler ProductModel üzerinden alınacak ve ProductsController'daki Create post aksiyonuna bu model parametre olarak gönderilecek. *@
 
 @{
-    ViewBag.Title = "Create New Product";
+    string title = "Create New Product"; 
+    // Razor'da bir değişken tanımlanıp değeri atandıktan sonra bu değişken view içerisinde aşağıda herhangi bir yerde kullanılabilir.
+
+    ViewBag.Title = title;
 }
 
-<h1>@ViewBag.Title</h1>
+<h1>@title</h1>
 <hr />
 
 

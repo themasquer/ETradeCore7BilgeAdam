@@ -1,6 +1,7 @@
 #nullable disable
 
 using Business.Services;
+using Business.Services.Report;
 using DataAccess.Contexts;
 using DataAccess.Repositories;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -93,6 +94,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddScoped<ICityService, CityService>();
+builder.Services.AddScoped<IReportService, ReportService>();
 #endregion
 
 var app = builder.Build();

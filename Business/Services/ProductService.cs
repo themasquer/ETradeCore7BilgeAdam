@@ -93,8 +93,15 @@ namespace Business.Services
                                                                                    // veritabanındaki tabloda kontrol eder, varsa true yoksa false döner.
                                                                                    // All LINQ methodu ise belirtilen koşul veya koşullara veritabanındaki tabloda tüm kayıtlar
                                                                                    // uyuyor mu diye kontrol eder, uyuyorsa true uymuyorsa false döner.
-                return new ErrorResult("Product can't be added because product with the same name exists!"); 
-                // bu ürün adına sahip kayıt bulunmaktadır mesajını içeren ErrorResult objesini dönüyoruz ki ilgili controller action'ında kullanabilelim.
+                return new ErrorResult("Product can't be added because product with the same name exists!");
+            // bu ürün adına sahip kayıt bulunmaktadır mesajını içeren ErrorResult objesini dönüyoruz ki ilgili controller action'ında kullanabilelim.
+
+
+
+            // eğer girilmek istenen yeni ürünün son kullanma tarihi bugünden önceki bir tarih ise ürün son kullanma tarihinden dolayı eklenemedi sonucunu dönüyoruz.
+            // güncelleme işlemine daha önceki tarihler için güncelleme yapılabilsin diye bu kontrolü koymuyoruz.
+            if (model.ExpirationDate.HasValue && model.ExpirationDate.Value < DateTime.Today)
+                return new ErrorResult("Product can't be added because expiration date is earlier than today (" + DateTime.Today.ToString("MM/dd/yyyy"));
 
 
 

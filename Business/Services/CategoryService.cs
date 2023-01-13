@@ -4,12 +4,14 @@ using AppCore.Results.Bases;
 using Business.Models;
 using DataAccess.Entities;
 using DataAccess.Repositories;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace Business.Services
 {
     public interface ICategoryService : IService<CategoryModel> 
     {
-
+        Task<List<CategoryModel>> GetListAsync();
     }
 
     public class CategoryService : ICategoryService 
@@ -77,6 +79,26 @@ namespace Business.Services
         public void Dispose()
         {
             _categoryRepo.Dispose();
+        }
+
+        public async Task<List<CategoryModel>> GetListAsync() // bu method tanımı mutlaka ICategoryService içerisinde de yapılmalıdır ki
+                                                              // controller'da çağrılabilsin.
+        {
+            List<CategoryModel> categories;
+
+            // 1. yöntem: 
+            //Task<List<CategoryModel>> task;
+            //task = Query().ToListAsync(); // önce Async (asenkron) method bir göreve (task) atanır.
+            //categories = task.Result; // daha sonra görev Result ile tamamlanıp içerisindeki kategori listesine ulaşılır.
+
+            // 2. yöntem:
+            categories = await Query().ToListAsync(); //await: asynchronous wait yani asenkron bekleme anlamına gelir.
+                                                      // await ile Async method sonucunda ulaşılan task tamamlanıp
+                                                      // içerisindeki veriye (List<CategoryModel> tipinde) ulaşılır.
+                                                      // eğer bir methodda Async bir method await ile kullanılıyorsa methodun
+                                                      // dönüş tipinin başına async yazılmalı ve dönüş tipi de bir Task<> içerisine alınmalıdır.
+
+            return categories;
         }
     }
 }

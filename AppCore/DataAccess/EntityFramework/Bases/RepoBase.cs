@@ -64,6 +64,13 @@ namespace AppCore.DataAccess.EntityFramework.Bases
             return query.Where(predicate); // daha sonra sorguyu where ile gelen koşul veya koşullar üzerinden filtreleyip dönüyoruz.
         }
 
+        // Read işlemi: bu class'ta belirtilen tip dışında belirtilen başka bir entity tipi üzerinden sorgu oluşturmamızı sağlar.
+        // where tip tanımlanan methodlarda da class'larda kullanıldığı şekilde kullanılabilir.
+        public virtual IQueryable<TRelationalEntity> Query<TRelationalEntity>() where TRelationalEntity : class, new()
+        {
+            return _dbContext.Set<TRelationalEntity>().AsQueryable();
+        }
+
         // Eğer istenirse predicate ile belirtilen koşul veya koşullara sahip herhangi bir kayıt var mı kontrolü bu method üzerinden yapılabilir.
         // Koşul veya koşullarda belki ilişkili entity referansları kullanılabilir diye sorguya bu entity'leri dahil ediyoruz. 
         public virtual bool Exists(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] entitiesToInclude)
@@ -131,8 +138,8 @@ namespace AppCore.DataAccess.EntityFramework.Bases
         // save parametresi default false olarak atanmıştır, class dışında generic tipler bu methodda olduğu gibi kullanılabilir.
         public virtual void Delete<TRelationalEntity>(Expression<Func<TRelationalEntity, bool>> predicate, bool save = false) where TRelationalEntity : class, new()
         {
-            var relationalEntities = _dbContext.Set<TRelationalEntity>().Where(predicate);
-            _dbContext.Set<TRelationalEntity>().RemoveRange(relationalEntities);
+            var relationalEntities = Query<TRelationalEntity>().Where(predicate).ToList(); // yukarıdaki ilişkili entity'ler için oluşturduğumuz Query methodundan listeyi çekiyoruz.
+            _dbContext.Set<TRelationalEntity>().RemoveRange(relationalEntities); // daha sonra ilişkili entity DbSet'inden çektiğimiz listeyi siliyoruz.
             if (save)
                 Save();
 		}

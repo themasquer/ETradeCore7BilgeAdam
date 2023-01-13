@@ -120,3 +120,10 @@ Kullanıcı Yönetimi: İstenirse kullanıcı yönetimi için Microsoft'un Ident
 65) MvcWebUI -> Views -> Home -> Welcome.cshtml -> User üzerinden kullanıcı adı gösterimi
 66) MvcWebUI -> Controllers -> Categories, Products ve Stores -> Authorize attribute'ları
 67) MvcWebUI -> Views -> Categories ve Products -> Index.cshtml ve Details.cshtml -> User üzerinden giriş yapan kullanıcıya göre link'lerin gösterimi
+
+Raporlama:
+68) Business -> Models -> Report -> ReportItemModel ve ReportFilterModel
+69) Business -> Services -> Report -> ReportService -> GetList (MvcWebUI -> Program.cs -> IoC Container)
+70) MvcWebUI -> Areas -> Report -> Models -> HomeIndexViewModel
+71) MvcWebUI -> Areas -> Report -> Controllers -> Home -> Index
+72) MvcWebUI -> Areas -> Report -> Views -> Home -> Index

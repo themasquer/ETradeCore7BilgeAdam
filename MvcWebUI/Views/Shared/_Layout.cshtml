@@ -15,7 +15,7 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3"><!-- Bootstrap menü. -->
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark box-shadow"><!-- Bootstrap menü. -->
             <div class="container-fluid"><!-- container Bootstrap class'ı: sağda ve solda belli bir miktar boşluk bırakır, container-fluid Bootstrap class'ı: tüm sayfayi genişlik olarak kaplar. -->
                 
                 <a class="navbar-brand text-warning" asp-area="" asp-controller="Home" asp-action="Index">E-Trade</a>
@@ -32,7 +32,7 @@
                 </button>
                 <!-- Tarayıcının genişliği küçültüldüğünde veya mobil ekranda sayfa görüntülendiğinde menünün bir butona tıklanarak açılıp kapanmasını sağlar. -->
 
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between divnavlayout">
                     <ul class="navbar-nav flex-grow-1">
 
                         @if (AppCore.App.Environment.IsDevelopment)
@@ -101,23 +101,40 @@
     </header>
     <div class="container-fluid">
         <main role="main" class="pb-3">
-            @RenderBody() 
-            @* 
-                Oluşturduğumuz view'lar bu method ile layout içerisinde istenilen bir alanda gösterilir. 
-                Tüm view'lar için ortak layout Views klasöründeki _ViewStart.cshtml dosyasında ayarlanabilir.
-                Eğer bir view farklı bir layout kullanacaksa, örneğin yeni layout dosya adı _MyLayout.cshtml olsun, o zaman view'ın en üstünde 
-                @{
-                    Layout = "_MyLayout";
-                }
-                şeklinde tanımlanabilir.
-                Tüm proje için layout gibi ortak kullanılacak view dosyaları Views -> Shared klasöründe oluşturulmalıdır.
-            *@
+            <div class="row">
+
+                <div class="col-1 bg-dark pb-3 d-none d-xl-block colleftlayout">
+                <!-- d-none: HTML elemanını tüm ekran genişlikleri için gizle, d-xl-block: sadece extra large ekran genişliğinde HTML elemanını göster -->
+
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-area="Report" asp-controller="Home" asp-action="Index">Report</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-11 pb-3 colrightlayout">
+                <!-- extra small, small, medium, large ekran genişlikleri için div 12 birim olsun, extra large ekran genişliği için 11 birim olsun -->
+
+                    @RenderBody()
+                    @*
+                        Oluşturduğumuz view'lar bu method ile layout içerisinde istenilen bir alanda gösterilir.
+                        Tüm view'lar için ortak layout Views klasöründeki _ViewStart.cshtml dosyasında ayarlanabilir.
+                        Eğer bir view farklı bir layout kullanacaksa, örneğin yeni layout dosya adı _MyLayout.cshtml olsun, o zaman view'ın en üstünde
+                        @{
+                            Layout = "_MyLayout";
+                        }
+                        şeklinde tanımlanabilir.
+                        Tüm proje için layout gibi ortak kullanılacak view dosyaları Views -> Shared klasöründe oluşturulmalıdır.
+                    *@
+                </div>
+            </div>
         </main>
     </div>
 
-    <footer class="border-top footer text-muted"><!-- Sayfanın en altında istenilirse kullanılabilecek footer kısmı. -->
-        <div class="container text-center">
-            <a asp-area="" asp-controller="Home" asp-action="Privacy">&copy; @DateTime.Now.Year | E-Trade. All rights reserved.</a>
+    <footer class="footer text-muted"><!-- Sayfanın en altında istenilirse kullanılabilecek footer kısmı. -->
+        <div class="container-fluid">
+            <a asp-area="" asp-controller="Home" asp-action="Privacy" class="text-dark">&copy; @DateTime.Now.Year | E-Trade. All rights reserved.</a>
         </div>
     </footer>
 

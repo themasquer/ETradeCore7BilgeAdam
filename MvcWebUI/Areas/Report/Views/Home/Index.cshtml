@@ -1,0 +1,138 @@
+﻿@model HomeIndexViewModel
+@* Report -> Home controller -> Index action'ından gönderdiğimiz view model. *@
+@*Model namespace using directive should be added to _ViewImports.cshtml.*@
+
+@*
+	Area'lar projenin Views klasörü altındaki _ViewImports ve _ViewStart view'larını kullanmamaktadır bu yüzden
+	projenin Views klasörü altındaki _ViewImports ve _ViewStart view'ları örneğin burada olduğu gibi Areas -> Report -> Views
+	altına kopyalanırsa bu area'daki view'ların bu _ViewImports ve _ViewStart view'larındaki kodları kullanmaları sağlanabilir.
+*@
+
+@{
+    ViewData["Title"] = "Report";
+}
+
+<h1>@ViewData["Title"]</h1>
+<hr />
+
+<!--
+    Sunucuya aşağıdaki kriterler üzerinden veri göndereceğimizden ya sadece filtre input elemanlarını bir form tag'i içerisine almalıyız
+    ya da daha kolaylık olsun diye aşağıdaki tüm kısmı form tag'i içerisine alabiliriz.
+-->
+<form asp-action="Index">
+
+    <!-- Arama Kriterleri -->
+    <div class="row">
+        <div class="col-2">
+            @await Component.InvokeAsync("Categories")
+        </div>
+        <div class="col-10">
+            <h5>Products</h5>
+            <hr />
+            <div class="row">
+
+                <!--
+                    view component'ta kategorileri doldurup tıklandığında kategoriye göre filtreleme yaptığımız için
+                    aşağıdaki kategori drop down list'e gerek yok, sadece filtrelemede drop down list kullanımına örnek için yazdık
+                -->
+                <div class="col-2">
+                    <label asp-for="Filter.CategoryId"></label>
+                </div>
+                <div class="col-4">
+                    <select asp-for="Filter.CategoryId" asp-items="Model.Categories" class="form-select">
+                        <option value="">-- All Categories --</option>
+                    </select>
+                </div>
+
+                <div class="col-2">
+                </div>
+                <div class="col-4">
+                </div>
+            </div>
+            <div class="row pt-3">
+                <div class="offset-2 col-10">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                    &nbsp;&nbsp;&nbsp;
+
+                    <a asp-action="Index" class="btn btn-outline-primary">Clear</a>
+                    <!-- 
+                        filtre verilerini temizlemek ve sorgu sonucunu sıfırlamak için Index action'ına yönlendiriyoruz ki 
+                        boş bir view model üzerinden view tekrar action'dan dönülerek filtre alanları temizlenmiş 
+                        ve rapor sonucu sıfırlanmış olsun 
+                    -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Rapor -->
+    <div class="row">
+        <div class="col-12">
+            @if (Model.Report is not null && Model.Report.Count > 0) @* Eğer view modeldeki Report listesi null değil ve içerisinde eleman varsa table'ı yazdır *@
+            {
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Report.FirstOrDefault().StoreName)
+                                @*
+                            view modeldeki Report bir IEnumerable değil de List olduğu için ReportItemModel özelliklerindeki
+                            DisplayName'leri kullanabilmek için listedeki herhangi bir elemana ki ilkine ulaşmak daha uygun
+                            ulaşıp özellik ismini yazıyoruz
+                            *@
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Report.FirstOrDefault().CategoryName)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Report.FirstOrDefault().ProductName)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Report.FirstOrDefault().UnitPrice)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Report.FirstOrDefault().StockAmount)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Report.FirstOrDefault().ExpirationDate)
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Report) // view model'deki Report listesindeki her bir elemanı turluyoruz
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.StoreName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.CategoryName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ProductName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.UnitPrice)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.StockAmount)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ExpirationDate)
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else @* Eğer view modeldeki Report listesi null veya içerisinde eleman yoksa kayıt bulunamadı yazdırıyoruz *@
+            {
+                <p class="text-primary">No records found.</p>
+            }
+        </div>
+    </div>
+
+</form>

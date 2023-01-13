@@ -34,3 +34,20 @@ body {
 .divusername span {
     font-size: 16px;
 }
+
+.colleftlayout {
+    padding-left: 0px;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+}
+
+.colrightlayout {
+    padding-top: 10px;
+    padding-left: 10px;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+}
+
+.divnavlayout {
+    padding-left: 35px;
+}
